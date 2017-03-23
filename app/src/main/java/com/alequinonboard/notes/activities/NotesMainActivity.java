@@ -48,7 +48,6 @@ public class NotesMainActivity extends AppCompatActivity {
         }
 
         this.buildListView();
-        this.buildAddNewNoteFloatingButton();
     }
 
     @Override
@@ -88,16 +87,4 @@ public class NotesMainActivity extends AppCompatActivity {
     private void updateListView(){
 
     }
-
-    private void buildAddNewNoteFloatingButton(){
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-    }
-
-
 }

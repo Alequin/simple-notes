@@ -5,8 +5,14 @@
 
     <item
         android:id="@id/add_icon_action_bar"
-        android:icon="@drawable/search_icon"
+        android:icon="@drawable/add_icon"
         android:title="@string/add_icon_title"
+        app:showAsAction="always"/>
+
+        /><item
+        android:id="@id/add_icon_action_bar"
+        android:icon="@drawable/search_icon"
+        android:title="@string/search_icon_title"
         app:showAsAction="always"
         />
 
