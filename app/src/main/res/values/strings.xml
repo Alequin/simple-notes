@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Simple Notes</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="add_icon_title">Add Icon</string>
+</resources>

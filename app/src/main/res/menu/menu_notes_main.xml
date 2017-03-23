@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.alequinonboard.simplenotes.NotesMainActivity">
+
+    <item
+        android:id="@id/add_icon_action_bar"
+        android:icon="@drawable/search_icon"
+        android:title="@string/add_icon_title"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>
