@@ -1,5 +1,6 @@
 package com.alequinonboard.notes.activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,15 +39,6 @@ public class NotesMainActivity extends AppCompatActivity {
         notesDatabase = new NotesDatabase(this);
         notesDatabase.open(this);
 
-        for(int a=0; a<5; a++){
-            Note x = new Note();
-            x.setTitle("title ("+a+")");
-            x.setMainText("text ("+a+")");
-            x.setDate(15,5,2017);
-            x.setFavourite(false);
-            notesDatabase.insertNoteToDatabase(x);
-        }
-
         this.buildListView();
     }
 
@@ -64,9 +56,17 @@ public class NotesMainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id){
+
+            case R.id.add_icon_action_bar:
+                startActivity(new Intent(this, NewNoteActivity.class));
+                break;
+
+            case R.id.search_icon_action_bar:
+                break;
+
+            case R.id.action_settings:
+                break;
         }
 
         return super.onOptionsItemSelected(item);

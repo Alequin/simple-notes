@@ -10,7 +10,7 @@
         app:showAsAction="always"/>
 
         /><item
-        android:id="@id/add_icon_action_bar"
+        android:id="@id/search_icon_action_bar"
         android:icon="@drawable/search_icon"
         android:title="@string/search_icon_title"
         app:showAsAction="always"

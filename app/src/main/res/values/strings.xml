@@ -4,4 +4,5 @@
 
     <string name="add_icon_title">Add Icon</string>
     <string name="search_icon_title">Search Icon</string>
+    <string name="title_activity_new_note">NewNoteActivity</string>
 </resources>
