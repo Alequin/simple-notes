@@ -18,14 +18,15 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     private static SQLiteDatabase database;
 
+    public static final String ID = "_id";
+
     public static final String NOTES_TABLE_TITLE = "notes";
-    public static final String NOTES_ID = "notes_id";
     public static final String TITLE = "notes_title";
     public static final String MAIN_TEXT = "main_text";
     public static final String DATE = "date";
 
     public static final String FAVOURITES_TABLE_TITLE = "favourites";
-    public static final String FAVOURITES_ID = "favourites_id";
+    public static final String NOTES_ID = "notes_id";
 
     public NotesDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -36,20 +37,16 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
         database.execSQL(String.format(
                 "CREATE TABLE %s(" +
-                "%s INTEGER NOT NULL AUTOINCREMENT, " +
-                "%s TEXT NOT NULL, %s TEXT NOT NULL, %s TEXT NOT NULL," +
-                "PRIMARY KEY (%s)",
-                NOTES_TABLE_TITLE, NOTES_ID, TITLE, MAIN_TEXT, DATE,
-                NOTES_ID
+                "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "%s TEXT, %s TEXT, %s TEXT);",
+                NOTES_TABLE_TITLE, ID, TITLE, MAIN_TEXT, DATE
         ));
 
         database.execSQL(String.format(
                 "CREATE TABLE %s(" +
-                "%s INTEGER NOT NULL AUTOINCREMENT, " +
-                "%s INTEGER NOT NULL, " +
-                "PRIMARY KEY (%s)",
-                FAVOURITES_TABLE_TITLE, FAVOURITES_ID, NOTES_ID,
-                FAVOURITES_ID
+                "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "%s INTEGER);",
+                FAVOURITES_TABLE_TITLE, ID, NOTES_ID
         ));
     }
 
@@ -80,15 +77,18 @@ public class NotesDatabase extends SQLiteOpenHelper {
             }
         }
 
-        return database.rawQuery(String.format(
-            "SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE
+        Cursor c = database.rawQuery(String.format(
+                "SELECT %s FROM %s;", columnsToSelect, NOTES_TABLE_TITLE
         ),null);
+        c.moveToFirst();
+
+        return c;
     }
 
     public void insertNoteToDatabase(Note newNote){
 
         database.execSQL(String.format(
-                "INSERT INTO %s (%s, %s, %s) VALUES (%s, %s, %s)",
+                "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
                 TITLE, MAIN_TEXT, DATE,
                 newNote.getTitle(), newNote.getMainText(), newNote.getDate()
@@ -98,15 +98,15 @@ public class NotesDatabase extends SQLiteOpenHelper {
         if(newNote.isFavourite()){
 
             final String getIdQuery = String.format(
-                    "SELECT %s FROM %s WHERE %s = %s ORDER BY %s DESC LIMIT 1",
-                    NOTES_ID, NOTES_TABLE_TITLE, TITLE, newNote.getTitle(),
-                    NOTES_ID
+                    "SELECT %s FROM %s WHERE %s = %s ORDER BY %s DESC LIMIT 1;",
+                    ID, NOTES_TABLE_TITLE, TITLE, newNote.getTitle(),
+                    ID
             );
 
             database.execSQL(String.format(
-                    "INSERT INTO %s (%s) VALUES ((%s))",
+                    "INSERT INTO %s (%s) VALUES ((%s));",
                     FAVOURITES_TABLE_TITLE,
-                    FAVOURITES_ID,
+                    ID,
                     getIdQuery
             ));
         }

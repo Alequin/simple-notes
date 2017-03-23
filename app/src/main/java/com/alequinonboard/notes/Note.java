@@ -43,7 +43,7 @@ public class Note {
     public void setDate(int day, int month, int year) {
         if(day < 1 || day > 31){
             throw new IllegalArgumentException("Day cannot be less than 1 or more than 31");
-        }if(month < 1 || day > 12){
+        }if(month < 1 || month > 12){
             throw new IllegalArgumentException("Month cannot be less than 1 or more than 12");
         }
         if(year < 1000 || year > 9999){
