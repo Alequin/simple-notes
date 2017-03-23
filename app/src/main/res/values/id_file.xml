@@ -6,4 +6,9 @@
         type="id"
         />
 
+    <item
+        name="notes_list_main_activity"
+        type="id"
+        />
+
 </resources>

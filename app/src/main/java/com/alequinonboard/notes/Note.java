@@ -9,8 +9,12 @@ public class Note {
     private String title;
     private String mainText;
     private String date;
+    private boolean isFavourite;
 
     public String getTitle() {
+        if(mainText == null){
+            throw new NullPointerException("title should not be null when get is called");
+        }
         return title;
     }
 
@@ -19,6 +23,9 @@ public class Note {
     }
 
     public String getMainText() {
+        if(mainText == null){
+            throw new NullPointerException("main text should not be null when get is called");
+        }
         return mainText;
     }
 
@@ -27,6 +34,9 @@ public class Note {
     }
 
     public String getDate() {
+        if(mainText == null){
+            throw new NullPointerException("date should not be null when get is called");
+        }
         return date;
     }
 
@@ -40,5 +50,13 @@ public class Note {
             throw new IllegalArgumentException("Year must be a four digit number");
         }
         this.date = String.format("%2$d/%2$d/%s", day, month, year);
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 }

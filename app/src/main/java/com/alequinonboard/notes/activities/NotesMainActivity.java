@@ -9,8 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.alequinonboard.notes.R;
+import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NotesMainActivity extends AppCompatActivity {
 
@@ -21,15 +24,9 @@ public class NotesMainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.add_icon));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        NotesDatabase.open(this);
+
+        this.buildAddNewNoteFloatingButton();
     }
 
     @Override
@@ -53,4 +50,16 @@ public class NotesMainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void buildAddNewNoteFloatingButton(){
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+
 }
