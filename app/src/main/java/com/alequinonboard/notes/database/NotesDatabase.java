@@ -58,16 +58,34 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    public static void open(Context currentContext){
+    public void open(Context currentContext){
         database = new NotesDatabase(currentContext).getWritableDatabase();
     }
 
-    public static void end(){
+    public void end(){
         database.close();
         database = null;
     }
 
-    public static void insertNoteToDatabase(Note newNote){
+    public Cursor getNotesTableCursor(String...columns){
+
+        String columnsToSelect = "";
+        int length = columns.length;
+        for(int a=0; a<length; a++){
+            //if the loop is on the final iteration don't add a comma on the end
+            if(a != length-1){
+                columnsToSelect += columns[a] + ",";
+            }else{
+                columnsToSelect += columns[a];
+            }
+        }
+
+        return database.rawQuery(String.format(
+            "SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE
+        ),null);
+    }
+
+    public void insertNoteToDatabase(Note newNote){
 
         database.execSQL(String.format(
                 "INSERT INTO %s (%s, %s, %s) VALUES (%s, %s, %s)",

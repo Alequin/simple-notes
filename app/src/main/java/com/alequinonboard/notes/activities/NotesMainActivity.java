@@ -1,5 +1,6 @@
 package com.alequinonboard.notes.activities;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,12 @@ import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NotesMainActivity extends AppCompatActivity {
 
+    private NotesDatabase notesDatabase;
+
+    private ListView listView;
+    private ListAdapter listAdapter;
+    private Cursor notesTable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +31,10 @@ public class NotesMainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NotesDatabase.open(this);
+        notesDatabase = new NotesDatabase(this);
+        notesDatabase.open(this);
 
+        this.buildListView();
         this.buildAddNewNoteFloatingButton();
     }
 
@@ -49,6 +58,16 @@ public class NotesMainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void buildListView(){
+
+        notesTable = notesDatabase.getNotesTableCursor(NotesDatabase.TITLE);
+
+    }
+
+    private void updateListView(){
+
     }
 
     private void buildAddNewNoteFloatingButton(){
