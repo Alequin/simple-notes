@@ -4,14 +4,14 @@
     tools:context="com.alequinonboard.simplenotes.NotesMainActivity">
 
     <item
-        android:id="@id/favourite_icon_new_notes_activity"
-        android:icon="@drawable/fav_icon"
+        android:id="@id/edit_icon_viewer_activity"
+        android:icon="@drawable/edit_icon"
         android:title="@string/favourite_icon_title"
         app:showAsAction="always"/>
 
     <item
         android:id="@id/delete_icon_viewer_activity"
-        android:icon="@drawable/tick_icon"
+        android:icon="@drawable/delete_icon"
         android:title="@string/search_icon_title"
         app:showAsAction="always"/>
 

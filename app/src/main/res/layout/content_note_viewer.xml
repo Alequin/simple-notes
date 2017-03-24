@@ -31,7 +31,7 @@
             android:src="@drawable/raised_white_tile_reduced_height"/>
 
         <TextView
-            android:id="@id/title_note_viewer_activity"
+            android:id="@id/title_viewer_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:id="@id/main_text_note_viewer_activity"
+                android:id="@id/main_text_viewer_activity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/basic_padding"

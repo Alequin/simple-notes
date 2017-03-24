@@ -105,6 +105,21 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return note;
     }
 
+    public void deleteNoteById(int id){
+
+        //delete note by id
+        //query favourites table for id, if found delete
+
+        database.execSQL(String.format(
+                "DELETE FROM %s WHERE %s = %s", NOTES_TABLE_TITLE, ID, id
+        ));
+
+        database.execSQL(String.format(
+                "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
+        ));
+
+    }
+
     public void insertNoteToDatabase(Note newNote){
 
         database.execSQL(String.format(

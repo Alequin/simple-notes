@@ -1,23 +1,16 @@
 package com.alequinonboard.notes.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.database.NotesDatabase;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class NewNoteActivity extends AppCompatActivity {
@@ -50,7 +43,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
         switch(id){
 
-            case R.id.tick_icon_new_notes_activity:
+            case R.id.delete_icon_viewer_activity:
                 saveNote();
                 break;
 

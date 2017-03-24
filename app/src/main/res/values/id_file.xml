@@ -17,12 +17,12 @@
         />
 
     <item
-        name="tick_icon_new_notes_activity"
+        name="delete_icon_viewer_activity"
         type="id"
         />
 
     <item
-        name="edit_icon_new_notes_activity"
+        name="edit_icon_viewer_activity"
         type="id"
         />
 
@@ -47,12 +47,12 @@
         />
 
     <item
-        name="title_note_viewer_activity"
+        name="title_viewer_activity"
         type="id"
         />
 
     <item
-        name="main_text_note_viewer_activity"
+        name="main_text_viewer_activity"
         type="id"
         />
 

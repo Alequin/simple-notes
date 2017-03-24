@@ -96,7 +96,7 @@ public class NotesMainActivity extends AppCompatActivity {
                 int idColumnIndex = listCursor.getColumnIndex(NotesDatabase.ID);
                 startNoteViewer.putExtra(NOTE_ID_EXTRA, listCursor.getInt(idColumnIndex));
 
-                startActivity(startNoteViewer);
+                startActivityForResult(startNoteViewer, IF_UPDATE_REQUEST_CODE);
             }
         });
     }
