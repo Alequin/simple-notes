@@ -16,4 +16,19 @@
         type="id"
         />
 
+    <item
+        name="tick_icon_new_notes_activity"
+        type="id"
+        />
+
+    <item
+        name="edit_icon_new_notes_activity"
+        type="id"
+        />
+
+    <item
+        name="delete_icon_new_notes_activity"
+        type="id"
+        />
+
 </resources>
