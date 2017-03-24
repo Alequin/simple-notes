@@ -46,4 +46,19 @@
         type="id"
         />
 
+    <item
+        name="title_note_viewer_activity"
+        type="id"
+        />
+
+    <item
+        name="main_text_note_viewer_activity"
+        type="id"
+        />
+
+    <item
+        name="date_note_viewer_activity"
+        type="id"
+        />
+
 </resources>

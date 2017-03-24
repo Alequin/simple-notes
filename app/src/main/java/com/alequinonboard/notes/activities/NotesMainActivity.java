@@ -1,5 +1,6 @@
 package com.alequinonboard.notes.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.alequinonboard.notes.R;
@@ -16,14 +19,17 @@ import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NotesMainActivity extends AppCompatActivity {
 
+    private static Context CURRENT_CONTEXT;
+
     private NotesDatabase database;
 
     public static final int IF_UPDATE_REQUEST_CODE = 1;
     public static final int IF_UPDATE_RESULT_CODE = 1;
+    public static final String NOTE_ID_EXTRA = "NOTE_ID_EXTRA";
 
     private ListView listView;
     private CursorAdapter listAdapter;
-    private Cursor notesCursor;
+    private Cursor listCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,8 @@ public class NotesMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notes_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        CURRENT_CONTEXT = this;
 
         database = new NotesDatabase(this);
         database.open(this);
@@ -70,20 +78,33 @@ public class NotesMainActivity extends AppCompatActivity {
 
     private void buildListView(){
 
-        notesCursor = getListCursor();
+        listCursor = getListCursor();
         listView = (ListView) findViewById(R.id.notes_list_main_activity);
         listAdapter = new SimpleCursorAdapter(
-                this, android.R.layout.simple_list_item_1, notesCursor, new String[]{NotesDatabase.TITLE},
+                this, android.R.layout.simple_list_item_1, listCursor, new String[]{NotesDatabase.TITLE},
                 new int[]{android.R.id.text1}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
         );
 
         listView.setAdapter(listAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent startNoteViewer = new Intent(CURRENT_CONTEXT, NoteViewerActivity.class);
+
+                listCursor.moveToPosition(position);
+                int idColumnIndex = listCursor.getColumnIndex(NotesDatabase.ID);
+                startNoteViewer.putExtra(NOTE_ID_EXTRA, listCursor.getInt(idColumnIndex));
+
+                startActivity(startNoteViewer);
+            }
+        });
     }
 
     private void updateListView(){
-        notesCursor.close();
-        notesCursor = getListCursor();
-        listAdapter.swapCursor(notesCursor);
+        listCursor.close();
+        listCursor = getListCursor();
+        listAdapter.swapCursor(listCursor);
     }
 
     private Cursor getListCursor(){

@@ -21,6 +21,10 @@
         <activity
             android:name=".activities.NewNoteActivity"
             android:label="@string/title_activity_new_note"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.NoteViewerActivity"
+            android:label="@string/title_activity_note_viewer"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

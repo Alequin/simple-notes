@@ -17,6 +17,7 @@ import com.alequinonboard.notes.database.NotesDatabase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class NewNoteActivity extends AppCompatActivity {
@@ -67,12 +68,12 @@ public class NewNoteActivity extends AppCompatActivity {
         }
 
         final EditText titleView = (EditText) findViewById(R.id.title_new_notes_activity);
-        final EditText mainTextiew = (EditText) findViewById(R.id.main_text_new_notes_activity);
+        final EditText mainTextView = (EditText) findViewById(R.id.main_text_new_notes_activity);
 
         final Note newNote = new Note();
 
         newNote.setTitle(titleView.getText().toString());
-        newNote.setMainText(mainTextiew.getText().toString());
+        newNote.setMainText(mainTextView.getText().toString());
         newNote.setDate(new Date());
 
         database.insertNoteToDatabase(newNote);

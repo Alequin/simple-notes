@@ -81,12 +81,28 @@ public class NotesDatabase extends SQLiteOpenHelper {
             }
         }
 
-        Cursor c = database.rawQuery(String.format(
+        Cursor cursor = database.rawQuery(String.format(
                 "SELECT %s FROM %s;", columnsToSelect, NOTES_TABLE_TITLE
         ),null);
-        c.moveToFirst();
+        cursor.moveToFirst();
 
-        return c;
+        return cursor;
+    }
+
+    public Note getNoteById(int id){
+
+        Cursor cursor = database.rawQuery(String.format(
+                "SELECT %s, %s, %s FROM %s WHERE %s = %s",
+                TITLE, MAIN_TEXT, DATE, NOTES_TABLE_TITLE, ID, id
+        ),null);
+        cursor.moveToFirst();
+
+        Note note = new Note();
+        note.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
+        note.setMainText(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
+        note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
+
+        return note;
     }
 
     public void insertNoteToDatabase(Note newNote){
