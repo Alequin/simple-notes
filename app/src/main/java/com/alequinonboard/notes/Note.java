@@ -1,5 +1,9 @@
 package com.alequinonboard.notes;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Alequin on 23/03/2017.
  */
@@ -40,16 +44,9 @@ public class Note {
         return date;
     }
 
-    public void setDate(int day, int month, int year) {
-        if(day < 1 || day > 31){
-            throw new IllegalArgumentException("Day cannot be less than 1 or more than 31");
-        }if(month < 1 || month > 12){
-            throw new IllegalArgumentException("Month cannot be less than 1 or more than 12");
-        }
-        if(year < 1000 || year > 9999){
-            throw new IllegalArgumentException("Year must be a four digit number");
-        }
-        this.date = String.format("%2$d/%2$d/%s", day, month, year);
+    public void setDate(Date currentDate) {
+        final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        this.date = dateFormat.format(currentDate);
     }
 
     public boolean isFavourite() {

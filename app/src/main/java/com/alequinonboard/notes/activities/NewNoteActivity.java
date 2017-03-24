@@ -9,10 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
+import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
+import com.alequinonboard.notes.database.NotesDatabase;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class NewNoteActivity extends AppCompatActivity {
+
+    private NotesDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +29,14 @@ public class NewNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_note);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        database = new NotesDatabase(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_notes_main, menu);
+        getMenuInflater().inflate(R.menu.menu_new_notes, menu);
         return true;
     }
 
@@ -38,18 +49,38 @@ public class NewNoteActivity extends AppCompatActivity {
 
         switch(id){
 
-            case R.id.add_icon_action_bar:
-                startActivity(new Intent(this, NewNoteActivity.class));
+            case R.id.tick_icon_new_notes_activity:
+                saveNote();
                 break;
 
-            case R.id.search_icon_action_bar:
-                break;
-
-            case R.id.action_settings:
+            case R.id.favourite_icon_new_notes_activity:
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void saveNote(){
+
+        if(!database.isOpen()) {
+            database.open(this);
+        }
+
+        final EditText titleView = (EditText) findViewById(R.id.title_new_notes_activity);
+        final EditText mainTextiew = (EditText) findViewById(R.id.main_text_new_notes_activity);
+
+        final Note newNote = new Note();
+
+        newNote.setTitle(titleView.getText().toString());
+        newNote.setMainText(mainTextiew.getText().toString());
+        newNote.setDate(new Date());
+
+        database.insertNoteToDatabase(newNote);
+
+        setResult(NotesMainActivity.IF_UPDATE_RESULT_CODE);
+        finish();
+    }
+
+
 
 }

@@ -4,9 +4,9 @@
     tools:context="com.alequinonboard.simplenotes.NotesMainActivity">
 
     <item
-        android:id="@id/tick_icon_new_notes_activity"
+        android:id="@id/favourite_icon_new_notes_activity"
         android:icon="@drawable/fav_icon"
-        android:title="@string/search_icon_title"
+        android:title="@string/favourite_icon_title"
         app:showAsAction="always"/>
 
     <item

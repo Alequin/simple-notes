@@ -31,4 +31,19 @@
         type="id"
         />
 
+    <item
+        name="favourite_icon_new_notes_activity"
+        type="id"
+        />
+
+    <item
+        name="title_new_notes_activity"
+        type="id"
+        />
+
+    <item
+        name="main_text_new_notes_activity"
+        type="id"
+        />
+
 </resources>

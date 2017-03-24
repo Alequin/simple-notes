@@ -4,16 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:paddingRight="10dp"
+    android:paddingEnd="10dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.alequinonboard.notes.activities.NewNoteActivity"
     tools:showIn="@layout/activity_new_note"
     android:orientation="vertical">
 
     <EditText
+        android:id="@id/title_new_notes_activity"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.25"
-        android:hint="@string/title"/>
+        android:hint="@string/title"
+        android:maxLength="30"/>
 
     <Space
         android:layout_width="match_parent"
@@ -21,6 +27,7 @@
         android:layout_weight="0.2"/>
 
     <EditText
+        android:id="@id/main_text_new_notes_activity"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"

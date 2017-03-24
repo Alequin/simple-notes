@@ -3,31 +3,27 @@ package com.alequinonboard.notes.activities;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
-import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NotesMainActivity extends AppCompatActivity {
 
-    private NotesDatabase notesDatabase;
+    private NotesDatabase database;
+
+    public static final int IF_UPDATE_REQUEST_CODE = 1;
+    public static final int IF_UPDATE_RESULT_CODE = 1;
 
     private ListView listView;
     private CursorAdapter listAdapter;
-    private Cursor notesTable;
+    private Cursor notesCursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +32,8 @@ public class NotesMainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        notesDatabase = new NotesDatabase(this);
-        notesDatabase.open(this);
+        database = new NotesDatabase(this);
+        database.open(this);
 
         this.buildListView();
     }
@@ -59,7 +55,7 @@ public class NotesMainActivity extends AppCompatActivity {
         switch(id){
 
             case R.id.add_icon_action_bar:
-                startActivity(new Intent(this, NewNoteActivity.class));
+                startActivityForResult(new Intent(this, NewNoteActivity.class), IF_UPDATE_REQUEST_CODE);
                 break;
 
             case R.id.search_icon_action_bar:
@@ -74,10 +70,10 @@ public class NotesMainActivity extends AppCompatActivity {
 
     private void buildListView(){
 
-        notesTable = notesDatabase.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
+        notesCursor = getListCursor();
         listView = (ListView) findViewById(R.id.notes_list_main_activity);
         listAdapter = new SimpleCursorAdapter(
-                this, android.R.layout.simple_list_item_1, notesTable, new String[]{NotesDatabase.TITLE},
+                this, android.R.layout.simple_list_item_1, notesCursor, new String[]{NotesDatabase.TITLE},
                 new int[]{android.R.id.text1}, SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
         );
 
@@ -85,6 +81,21 @@ public class NotesMainActivity extends AppCompatActivity {
     }
 
     private void updateListView(){
+        notesCursor.close();
+        notesCursor = getListCursor();
+        listAdapter.swapCursor(notesCursor);
+    }
+
+    private Cursor getListCursor(){
+        return database.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == IF_UPDATE_REQUEST_CODE && resultCode == IF_UPDATE_RESULT_CODE){
+            updateListView();
+        }
 
     }
 }

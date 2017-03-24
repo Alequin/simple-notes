@@ -59,6 +59,10 @@ public class NotesDatabase extends SQLiteOpenHelper {
         database = new NotesDatabase(currentContext).getWritableDatabase();
     }
 
+    public boolean isOpen(){
+        return database.isOpen();
+    }
+
     public void end(){
         database.close();
         database = null;
