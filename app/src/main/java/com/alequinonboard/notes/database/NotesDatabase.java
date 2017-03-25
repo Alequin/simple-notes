@@ -55,6 +55,12 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
+    public static NotesDatabase getInitialisedAndOpenDatabase(Context currentContext){
+        final NotesDatabase tempDatabase = new NotesDatabase(currentContext);
+        tempDatabase.open(currentContext);
+        return tempDatabase;
+    }
+
     public void open(Context currentContext){
         database = new NotesDatabase(currentContext).getWritableDatabase();
     }

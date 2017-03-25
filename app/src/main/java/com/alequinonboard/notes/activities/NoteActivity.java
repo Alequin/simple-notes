@@ -12,9 +12,4 @@ public class NoteActivity extends AppCompatActivity{
 
     protected NotesDatabase database;
 
-    protected void initialiseAndOpenDatabase(){
-        database = new NotesDatabase(this);
-        database.open(this);
-    }
-
 }

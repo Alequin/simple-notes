@@ -1,7 +1,6 @@
 package com.alequinonboard.notes.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,9 +10,7 @@ import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.database.NotesDatabase;
 
-public class NoteViewerActivity extends AppCompatActivity {
-
-    private NotesDatabase database;
+public class NoteViewerActivity extends NoteActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +19,8 @@ public class NoteViewerActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        database = new NotesDatabase(this);
-        database.open(this);
-
-        buildNote();
+        database = NotesDatabase.getInitialisedAndOpenDatabase(this);
+        setNoteTitleAndMainTextFromDatabase();
     }
 
     @Override
@@ -57,17 +52,18 @@ public class NoteViewerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void buildNote(){
-
-        TextView title = (TextView) findViewById(R.id.title_viewer_activity);
-        TextView mainText = (TextView) findViewById(R.id.main_text_viewer_activity);
-        TextView date = (TextView) findViewById(R.id.date_note_viewer_activity);
-
+    private void setNoteTitleAndMainTextFromDatabase(){
         Note note = database.getNoteById(getCurrentNoteID());
+        setTitleText(note);
+        setMainText(note);
+    }
 
-        title.setText(note.getTitle());
-        mainText.setText(note.getMainText());
-        date.setText(note.getDate());
+    private void setTitleText(Note note){
+        ((TextView) findViewById(R.id.title_viewer_activity)).setText(note.getTitle());
+    }
+
+    private void setMainText(Note note){
+        ((TextView) findViewById(R.id.main_text_viewer_activity)).setText(note.getMainText());;
     }
 
     private int getCurrentNoteID(){

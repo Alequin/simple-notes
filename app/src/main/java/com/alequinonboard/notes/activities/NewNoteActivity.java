@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
+import com.alequinonboard.notes.database.NotesDatabase;
 
 import java.util.Date;
 
@@ -51,7 +52,7 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private void saveNoteToDatabase(){
-        this.initialiseAndOpenDatabase();
+        database = NotesDatabase.getInitialisedAndOpenDatabase(this);
         database.insertNoteToDatabase(initialiseNewNote());
     }
 
@@ -73,7 +74,5 @@ public class NewNoteActivity extends NoteActivity {
     private String getMainText(){
         return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
     }
-
-
 
 }

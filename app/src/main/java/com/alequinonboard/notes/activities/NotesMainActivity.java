@@ -38,8 +38,7 @@ public class NotesMainActivity extends NoteActivity {
 
         CURRENT_CONTEXT = this;
 
-        this.initialiseAndOpenDatabase();
-
+        database = NotesDatabase.getInitialisedAndOpenDatabase(this);
         this.buildListView();
     }
 
@@ -83,7 +82,7 @@ public class NotesMainActivity extends NoteActivity {
         );
 
         listView.setAdapter(listAdapter);
-        setListListener();
+        listView.setOnItemClickListener(getListListener());
     }
 
     private void updateListView(){
@@ -96,8 +95,8 @@ public class NotesMainActivity extends NoteActivity {
         return database.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
     }
 
-    private void setListListener(){
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener getListListener(){
+        return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent startNoteViewer = new Intent(CURRENT_CONTEXT, NoteViewerActivity.class);
@@ -108,7 +107,7 @@ public class NotesMainActivity extends NoteActivity {
 
                 startActivityForResult(startNoteViewer, IF_UPDATE_REQUEST_CODE);
             }
-        });
+        };
     }
 
     @Override
