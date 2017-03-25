@@ -2,9 +2,7 @@ package com.alequinonboard.notes;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.IllegalFormatException;
 import java.util.regex.Pattern;
 
 /**
@@ -26,6 +24,9 @@ public class Note {
     }
 
     public void setTitle(String title) {
+        if(title == null){
+            throw new NullPointerException("title should not be null");
+        }
         this.title = title;
     }
 
@@ -37,6 +38,9 @@ public class Note {
     }
 
     public void setMainText(String mainText) {
+        if(mainText == null){
+            throw new NullPointerException("main text should not be null");
+        }
         this.mainText = mainText;
     }
 
@@ -48,15 +52,15 @@ public class Note {
     }
 
     public void setDate(Date date) {
+        if(date == null){
+            throw new NullPointerException("date should not be null");
+        }
         final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.date = dateFormat.format(date).toString();
     }
 
     public void setDate(String date) {
-        Pattern datePattern = Pattern.compile("\\d\\d/\\d\\d/\\d\\d\\d\\d");
-        if(!(datePattern.matcher(date)).find()){
-            throw new IllegalArgumentException("Date format should match dd/mm/yyyy");
-        }
+        checkDateFormatAndValueValidity(date);
         this.date = date;
     }
 
@@ -66,5 +70,33 @@ public class Note {
 
     public void setFavourite(boolean favourite) {
         isFavourite = favourite;
+    }
+
+    private void checkDateFormatAndValueValidity(String date){
+        if(date == null){
+            throw new NullPointerException("date should not be null");
+        }
+        this.checkDateFormatValidity(date);
+        this.checkDateValueValidity(date);
+    }
+
+    private void checkDateFormatValidity(String date){
+        Pattern datePattern = Pattern.compile("^\\d\\d/\\d\\d/\\d+$");
+        if(!(datePattern.matcher(date)).find()){
+            throw new IllegalArgumentException("Date format should match dd/mm/yyyy");
+        }
+    }
+
+    private void checkDateValueValidity(String date){
+        final String errorMessage = "Given %s is not valid: " + date;
+        final int day = Integer.parseInt(date.substring(0,2));
+        if(day < 1 || day > 31){
+            throw new IllegalArgumentException(String.format(errorMessage, "day"));
+        }
+        final int month = Integer.parseInt(date.substring(3,5));
+        if(month < 1 || month > 12){
+            throw new IllegalArgumentException(String.format(errorMessage, "month"));
+        }
+        //User can edit year to be any value they want as long as it is numerical
     }
 }
