@@ -77,16 +77,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotesTableCursor(String...columns){
 
-        String columnsToSelect = "";
-        int length = columns.length;
-        for(int a=0; a<length; a++){
-            //if the loop is on the final iteration don't add a comma on the end
-            if(a != length-1){
-                columnsToSelect += columns[a] + ",";
-            }else{
-                columnsToSelect += columns[a];
-            }
-        }
+        String columnsToSelect = this.joinColumnNames(columns);
 
         Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s FROM %s;", columnsToSelect, NOTES_TABLE_TITLE
@@ -102,41 +93,46 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "SELECT %s, %s, %s FROM %s WHERE %s = %s",
                 TITLE, MAIN_TEXT, DATE, NOTES_TABLE_TITLE, ID, id
         ),null);
-        cursor.moveToFirst();
 
-        Note note = new Note();
-        note.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
-        note.setMainText(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
-        note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
+        cursor.moveToFirst();
+        Note note = getNoteFromCursor(cursor);
+        cursor.close();
 
         return note;
     }
 
     public void insertNoteToDatabase(Note newNote){
 
+        this.insertToNotesTable(newNote);
+
+        // is note is marked as favourite add id to favourites table
+        if(newNote.isFavourite()){
+            this.insertToFavouritesTable(newNote);
+        }
+    }
+
+    private void insertToNotesTable(Note newNote){
         accessDatabase.execSQL(String.format(
                 "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
                 TITLE, MAIN_TEXT, DATE,
                 newNote.getTitle(), newNote.getMainText(), newNote.getDate()
         ));
+    }
 
-        // is note is marked as favourite add id to favourites table
-        if(newNote.isFavourite()){
+    private void insertToFavouritesTable(Note newNote){
+        final String getIdQuery = String.format(
+                "SELECT %s FROM %s WHERE %s = %s ORDER BY %s DESC LIMIT 1;",
+                ID, NOTES_TABLE_TITLE, TITLE, newNote.getTitle(),
+                ID
+        );
 
-            final String getIdQuery = String.format(
-                    "SELECT %s FROM %s WHERE %s = %s ORDER BY %s DESC LIMIT 1;",
-                    ID, NOTES_TABLE_TITLE, TITLE, newNote.getTitle(),
-                    ID
-            );
-
-            accessDatabase.execSQL(String.format(
-                    "INSERT INTO %s (%s) VALUES ((%s));",
-                    FAVOURITES_TABLE_TITLE,
-                    ID,
-                    getIdQuery
-            ));
-        }
+        accessDatabase.execSQL(String.format(
+                "INSERT INTO %s (%s) VALUES ((%s));",
+                FAVOURITES_TABLE_TITLE,
+                ID,
+                getIdQuery
+        ));
     }
 
     public void updateNoteInDatabase(int id, Note editedNote){
@@ -164,5 +160,28 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
         ));
 
+    }
+
+    private Note getNoteFromCursor(Cursor cursor){
+        Note note = new Note();
+        note.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
+        note.setMainText(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
+        note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
+        return note;
+    }
+
+    private String joinColumnNames(String[] columns){
+        String columnsToSelect = "";
+        int length = columns.length;
+        for(int a=0; a<length; a++){
+            //if the loop is on the final iteration don't add a comma on the end
+            if(a != length-1){
+                columnsToSelect += columns[a] + ",";
+            }else{
+                columnsToSelect += columns[a];
+            }
+        }
+
+        return columnsToSelect;
     }
 }
