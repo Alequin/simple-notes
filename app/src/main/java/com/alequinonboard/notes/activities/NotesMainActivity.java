@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +16,10 @@ import android.widget.ListView;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.database.NotesDatabase;
 
-public class NotesMainActivity extends AppCompatActivity {
+public class NotesMainActivity extends NoteActivity {
 
     private static Context CURRENT_CONTEXT;
 
-    private NotesDatabase database;
 
     public static final int IF_UPDATE_REQUEST_CODE = 1;
     public static final int IF_UPDATE_RESULT_CODE = 1;
@@ -40,8 +38,7 @@ public class NotesMainActivity extends AppCompatActivity {
 
         CURRENT_CONTEXT = this;
 
-        database = new NotesDatabase(this);
-        database.open(this);
+        this.initialiseAndOpenDatabase();
 
         this.buildListView();
     }
@@ -86,7 +83,20 @@ public class NotesMainActivity extends AppCompatActivity {
         );
 
         listView.setAdapter(listAdapter);
+        setListListener();
+    }
 
+    private void updateListView(){
+        listCursor.close();
+        listCursor = getListCursor();
+        listAdapter.swapCursor(listCursor);
+    }
+
+    private Cursor getListCursor(){
+        return database.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
+    }
+
+    private void setListListener(){
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -99,16 +109,6 @@ public class NotesMainActivity extends AppCompatActivity {
                 startActivityForResult(startNoteViewer, IF_UPDATE_REQUEST_CODE);
             }
         });
-    }
-
-    private void updateListView(){
-        listCursor.close();
-        listCursor = getListCursor();
-        listAdapter.swapCursor(listCursor);
-    }
-
-    private Cursor getListCursor(){
-        return database.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
     }
 
     @Override
