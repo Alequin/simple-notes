@@ -1,5 +1,6 @@
 package com.alequinonboard.notes.activities;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,6 +13,10 @@ import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NoteViewerActivity extends NoteActivity {
 
+    private Note noteToShow;
+
+    private AlertDialog dateCreatedDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +25,10 @@ public class NoteViewerActivity extends NoteActivity {
         setSupportActionBar(toolbar);
 
         database = NotesDatabase.getInitialisedAndOpenDatabase(this);
+        noteToShow = database.getNoteById(getCurrentNoteID());
+
         setNoteTitleAndMainTextFromDatabase();
+        initialiseDataCreatedDialog();
     }
 
     @Override
@@ -47,15 +55,28 @@ public class NoteViewerActivity extends NoteActivity {
 
             case R.id.favourite_icon_new_notes_activity:
                 break;
+
+            case R.id.date_created_viewer_activity:
+                dateCreatedDialog.show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private void setNoteTitleAndMainTextFromDatabase(){
-        Note note = database.getNoteById(getCurrentNoteID());
-        setTitleText(note);
-        setMainText(note);
+        setTitleText(noteToShow);
+        setMainText(noteToShow);
+    }
+
+    private void initialiseDataCreatedDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getString(R.string.date_created_dialog_title));
+        builder.setMessage(noteToShow.getDate());
+
+        dateCreatedDialog = builder.create();
     }
 
     private void setTitleText(Note note){
