@@ -75,12 +75,12 @@ public class NoteViewerActivity extends NoteActivity {
         if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
             updateNote();
         }
-
     }
 
     private void updateNote() {
         noteToShow = database.getNoteById(getCurrentNoteID());
         setNoteTitleAndMainText();
+        setResult(NotesMainActivity.UPDATE_RESULT_CODE);
     }
 
     private void setNoteTitleAndMainText(){
