@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
-import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NoteViewerActivity extends NoteActivity {
 
@@ -31,8 +30,8 @@ public class NoteViewerActivity extends NoteActivity {
         database = this.initialisedAndOpenDatabaseIfRequired();
         noteToShow = database.getNoteById(getCurrentNoteID());
 
-        setNoteTitleAndMainText();
-        initialiseDataCreatedDialog();
+        displayNoteTitleAndMainText();
+        dateCreatedDialog = getDateCreatedDialog();
     }
 
     @Override
@@ -79,23 +78,25 @@ public class NoteViewerActivity extends NoteActivity {
 
     private void updateNote() {
         noteToShow = database.getNoteById(getCurrentNoteID());
-        setNoteTitleAndMainText();
+        displayNoteTitleAndMainText();
+        //result is set as if update is called the note must have changed. The list view must also
+        //change on return
         setResult(NotesMainActivity.UPDATE_RESULT_CODE);
     }
 
-    private void setNoteTitleAndMainText(){
+    private void displayNoteTitleAndMainText(){
         setTitleText(noteToShow);
         setMainText(noteToShow);
     }
 
-    private void initialiseDataCreatedDialog() {
+    private AlertDialog getDateCreatedDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(getString(R.string.date_created_dialog_title));
         builder.setMessage(noteToShow.getDate());
 
-        dateCreatedDialog = builder.create();
+        return builder.create();
     }
 
     private void openNewNoteActivityInEditMode() {
