@@ -47,6 +47,11 @@
         />
 
     <item
+        name="tick_icon_new_notes_activity"
+        type="id"
+        />
+
+    <item
         name="title_viewer_activity"
         type="id"
         />

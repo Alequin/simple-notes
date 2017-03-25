@@ -17,4 +17,10 @@
     <string name="title_activity_note_viewer">NoteViewerActivity</string>
 
     <string name="date_created_dialog_title">Date Created</string>
+    <string name="date_change_dialog_message">Change the creation date to today?</string>
+
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
 </resources>

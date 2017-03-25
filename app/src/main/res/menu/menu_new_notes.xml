@@ -10,7 +10,7 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@id/delete_icon_viewer_activity"
+        android:id="@id/tick_icon_new_notes_activity"
         android:icon="@drawable/tick_icon"
         android:title="@string/search_icon_title"
         app:showAsAction="always"/>

@@ -21,8 +21,8 @@ public class NotesMainActivity extends NoteActivity {
     private static Context CURRENT_CONTEXT;
 
 
-    public static final int IF_UPDATE_REQUEST_CODE = 1;
-    public static final int IF_UPDATE_RESULT_CODE = 1;
+    public static final int UPDATE_REQUEST_CODE = 1;
+    public static final int UPDATE_RESULT_CODE = 1;
     public static final String NOTE_ID_EXTRA = "NOTE_ID_EXTRA";
 
     private ListView listView;
@@ -38,7 +38,7 @@ public class NotesMainActivity extends NoteActivity {
 
         CURRENT_CONTEXT = this;
 
-        database = NotesDatabase.getInitialisedAndOpenDatabase(this);
+        database = this.initialisedAndOpenDatabaseIfRequired();
         this.buildListView();
     }
 
@@ -59,7 +59,7 @@ public class NotesMainActivity extends NoteActivity {
         switch(id){
 
             case R.id.add_icon_action_bar:
-                startActivityForResult(new Intent(this, NewNoteActivity.class), IF_UPDATE_REQUEST_CODE);
+                startActivityForResult(new Intent(this, NewNoteActivity.class), UPDATE_REQUEST_CODE);
                 break;
 
             case R.id.search_icon_action_bar:
@@ -105,7 +105,7 @@ public class NotesMainActivity extends NoteActivity {
                 int idColumnIndex = listCursor.getColumnIndex(NotesDatabase.ID);
                 startNoteViewer.putExtra(NOTE_ID_EXTRA, listCursor.getInt(idColumnIndex));
 
-                startActivityForResult(startNoteViewer, IF_UPDATE_REQUEST_CODE);
+                startActivityForResult(startNoteViewer, UPDATE_REQUEST_CODE);
             }
         };
     }
@@ -113,7 +113,7 @@ public class NotesMainActivity extends NoteActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == IF_UPDATE_REQUEST_CODE && resultCode == IF_UPDATE_RESULT_CODE){
+        if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
             updateListView();
         }
 

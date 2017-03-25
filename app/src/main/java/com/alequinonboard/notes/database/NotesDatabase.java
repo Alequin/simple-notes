@@ -16,7 +16,8 @@ public class NotesDatabase extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Notes_database";
     public static final int DATABASE_VERSION = 1;
 
-    private static SQLiteDatabase database;
+    private static NotesDatabase database;
+    private SQLiteDatabase accessDatabase;
 
     public static final String ID = "_id";
 
@@ -55,23 +56,23 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    public static NotesDatabase getInitialisedAndOpenDatabase(Context currentContext){
-        final NotesDatabase tempDatabase = new NotesDatabase(currentContext);
-        tempDatabase.open(currentContext);
-        return tempDatabase;
+    public static NotesDatabase getInitialisedAndOpenedDatabase(Context currentContext){
+        database = new NotesDatabase(currentContext);
+        database.open(currentContext);
+        return database;
     }
 
     public void open(Context currentContext){
-        database = new NotesDatabase(currentContext).getWritableDatabase();
+        accessDatabase = new NotesDatabase(currentContext).getWritableDatabase();
     }
 
     public boolean isOpen(){
-        return database.isOpen();
+        return accessDatabase.isOpen();
     }
 
     public void end(){
-        database.close();
-        database = null;
+        accessDatabase.close();
+        accessDatabase = null;
     }
 
     public Cursor getNotesTableCursor(String...columns){
@@ -87,7 +88,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
             }
         }
 
-        Cursor cursor = database.rawQuery(String.format(
+        Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s FROM %s;", columnsToSelect, NOTES_TABLE_TITLE
         ),null);
         cursor.moveToFirst();
@@ -97,7 +98,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Note getNoteById(int id){
 
-        Cursor cursor = database.rawQuery(String.format(
+        Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s, %s, %s FROM %s WHERE %s = %s",
                 TITLE, MAIN_TEXT, DATE, NOTES_TABLE_TITLE, ID, id
         ),null);
@@ -111,24 +112,9 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return note;
     }
 
-    public void deleteNoteById(int id){
-
-        //delete note by id
-        //query favourites table for id, if found delete
-
-        database.execSQL(String.format(
-                "DELETE FROM %s WHERE %s = %s", NOTES_TABLE_TITLE, ID, id
-        ));
-
-        database.execSQL(String.format(
-                "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
-        ));
-
-    }
-
     public void insertNoteToDatabase(Note newNote){
 
-        database.execSQL(String.format(
+        accessDatabase.execSQL(String.format(
                 "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
                 TITLE, MAIN_TEXT, DATE,
@@ -144,12 +130,39 @@ public class NotesDatabase extends SQLiteOpenHelper {
                     ID
             );
 
-            database.execSQL(String.format(
+            accessDatabase.execSQL(String.format(
                     "INSERT INTO %s (%s) VALUES ((%s));",
                     FAVOURITES_TABLE_TITLE,
                     ID,
                     getIdQuery
             ));
         }
+    }
+
+    public void updateNoteInDatabase(int id, Note editedNote){
+
+        accessDatabase.execSQL(String.format(
+                "UPDATE %s SET %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
+                NOTES_TABLE_TITLE, TITLE, editedNote.getTitle(),
+                MAIN_TEXT, editedNote.getMainText(),
+                DATE, editedNote.getDate(),
+                ID, id
+        ));
+
+    }
+
+    public void deleteNoteById(int id){
+
+        //delete note by id
+        //query favourites table for id, if found delete
+
+        accessDatabase.execSQL(String.format(
+                "DELETE FROM %s WHERE %s = %s", NOTES_TABLE_TITLE, ID, id
+        ));
+
+        accessDatabase.execSQL(String.format(
+                "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
+        ));
+
     }
 }

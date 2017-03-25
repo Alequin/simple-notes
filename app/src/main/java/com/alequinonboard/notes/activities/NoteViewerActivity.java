@@ -1,6 +1,7 @@
 package com.alequinonboard.notes.activities;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,6 +14,9 @@ import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NoteViewerActivity extends NoteActivity {
 
+    public static final int UPDATE_REQUEST_CODE = 1;
+    public static final int UPDATE_RESULT_CODE = 2;
+
     private Note noteToShow;
 
     private AlertDialog dateCreatedDialog;
@@ -24,10 +28,10 @@ public class NoteViewerActivity extends NoteActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        database = NotesDatabase.getInitialisedAndOpenDatabase(this);
+        database = this.initialisedAndOpenDatabaseIfRequired();
         noteToShow = database.getNoteById(getCurrentNoteID());
 
-        setNoteTitleAndMainTextFromDatabase();
+        setNoteTitleAndMainText();
         initialiseDataCreatedDialog();
     }
 
@@ -47,13 +51,14 @@ public class NoteViewerActivity extends NoteActivity {
 
         switch(id){
 
-            case R.id.delete_icon_viewer_activity:
-                database.deleteNoteById(getCurrentNoteID());
-                setResult(NotesMainActivity.IF_UPDATE_RESULT_CODE);
-                finish();
+            case R.id.edit_icon_viewer_activity:
+                openNewNoteActivityInEditMode();
                 break;
 
-            case R.id.favourite_icon_new_notes_activity:
+            case R.id.delete_icon_viewer_activity:
+                database.deleteNoteById(getCurrentNoteID());
+                setResult(NotesMainActivity.UPDATE_RESULT_CODE);
+                finish();
                 break;
 
             case R.id.date_created_viewer_activity:
@@ -64,7 +69,21 @@ public class NoteViewerActivity extends NoteActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setNoteTitleAndMainTextFromDatabase(){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
+            updateNote();
+        }
+
+    }
+
+    private void updateNote() {
+        noteToShow = database.getNoteById(getCurrentNoteID());
+        setNoteTitleAndMainText();
+    }
+
+    private void setNoteTitleAndMainText(){
         setTitleText(noteToShow);
         setMainText(noteToShow);
     }
@@ -77,6 +96,16 @@ public class NoteViewerActivity extends NoteActivity {
         builder.setMessage(noteToShow.getDate());
 
         dateCreatedDialog = builder.create();
+    }
+
+    private void openNewNoteActivityInEditMode() {
+
+        Intent startNewNoteActivity = new Intent(this, NewNoteActivity.class);
+        startNewNoteActivity.putExtra(NewNoteActivity.ID_OF_NOTE_TO_EDIT, getCurrentNoteID());
+        startNewNoteActivity.putExtra(NewNoteActivity.IF_EDIT_MODE, true);
+
+        startActivityForResult(startNewNoteActivity, UPDATE_REQUEST_CODE);
+
     }
 
     private void setTitleText(Note note){

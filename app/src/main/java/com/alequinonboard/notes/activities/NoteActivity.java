@@ -12,4 +12,11 @@ public class NoteActivity extends AppCompatActivity{
 
     protected NotesDatabase database;
 
+    protected NotesDatabase initialisedAndOpenDatabaseIfRequired(){
+        if(database == null || !database.isOpen()){
+            return NotesDatabase.getInitialisedAndOpenedDatabase(this);
+        }else{
+            return database;
+        }
+    }
 }
