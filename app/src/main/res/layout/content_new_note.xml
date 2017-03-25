@@ -39,7 +39,7 @@
             android:hint="@string/title"
             android:textStyle="bold"
             android:background="@android:color/transparent"
-            android:maxLength="20"/>
+            android:maxLength="25"/>
 
     </RelativeLayout>
 
