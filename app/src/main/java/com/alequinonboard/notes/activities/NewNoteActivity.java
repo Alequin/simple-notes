@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
-import com.alequinonboard.notes.database.NotesDatabase;
 
 import java.util.Date;
 
@@ -36,11 +33,8 @@ public class NewNoteActivity extends NoteActivity {
         editMode = getIntent().getBooleanExtra(IF_EDIT_MODE, false);
 
         if(editMode){
-            editModeDateChangeDialog = buildEditModeDateChangeDialog();
             database = initialisedAndOpenDatabaseIfRequired();
-            noteToEdit = database.getNoteById(getIdOfNoteToEdit());
-            setTitleViewText(noteToEdit.getTitle());
-            setMainTextViewTest(noteToEdit.getMainText());
+            this.setUpEditMode();
         }
     }
 
@@ -82,17 +76,7 @@ public class NewNoteActivity extends NoteActivity {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        final AlertDialog.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(i == -1){
-                    noteToEdit.setDate(new Date());
-                }
-                updateNoteInDatabase();
-                setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
-                finish();
-            }
-        };
+        final AlertDialog.OnClickListener listener = getEditDialogListener();
 
         builder.setMessage(getString(R.string.date_change_dialog_message));
         builder.setPositiveButton(getString(R.string.yes), listener);
@@ -101,13 +85,39 @@ public class NewNoteActivity extends NoteActivity {
         return builder.create();
     }
 
+    private DialogInterface.OnClickListener getEditDialogListener(){
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                boolean ifUpdateDate = i == -1;
+                setNoteToEditValues(ifUpdateDate);
+                updateNoteInDatabase();
+                setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
+                finish();
+            }
+        };
+    }
+
+    private void setUpEditMode(){
+        editModeDateChangeDialog = buildEditModeDateChangeDialog();
+        noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+        this.setTitleViewString(noteToEdit.getTitle());
+        this.setMainTextViewString(noteToEdit.getMainText());
+    }
+
     private void saveNoteToDatabase(){
         database.insertNoteToDatabase(initialiseNewNote());
     }
 
+    private void setNoteToEditValues(boolean ifUpdateDate){
+        noteToEdit.setTitle(getTitleStringFromView());
+        noteToEdit.setMainText(getMainTextStringFromView());
+        if(ifUpdateDate){
+            noteToEdit.setDate(new Date());
+        }
+    }
+
     private void updateNoteInDatabase(){
-        noteToEdit.setTitle(getTitleTextFromView());
-        noteToEdit.setMainText(getMainTextFromView());
         database.updateNoteInDatabase(getIdOfNoteToEdit(), noteToEdit);
     }
 
@@ -115,26 +125,26 @@ public class NewNoteActivity extends NoteActivity {
 
         final Note newNote = new Note();
 
-        newNote.setTitle(getTitleTextFromView());
-        newNote.setMainText(getMainTextFromView());
+        newNote.setTitle(getTitleStringFromView());
+        newNote.setMainText(getMainTextStringFromView());
         newNote.setDate(new Date());
 
         return newNote;
     }
 
-    private String getTitleTextFromView(){
+    private String getTitleStringFromView(){
         return ((EditText) findViewById(R.id.title_new_notes_activity)).getText().toString();
     }
 
-    private String getMainTextFromView(){
+    private String getMainTextStringFromView(){
         return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
     }
 
-    private void setTitleViewText(String textToShow){
+    private void setTitleViewString(String textToShow){
         ((EditText) findViewById(R.id.title_new_notes_activity)).setText(textToShow);
     }
 
-    private void setMainTextViewTest(String textToShow){
+    private void setMainTextViewString(String textToShow){
         ((EditText) findViewById(R.id.main_text_new_notes_activity)).setText(textToShow);
     }
 
