@@ -72,14 +72,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
     }
 
     public static NotesDatabase getDatabaseAndInitialisedIfRequired(Context currentContext){
-        if(database == null || !database.isOpen()){
-            return NotesDatabase.getInitialisedAndOpenedDatabase(currentContext);
-        }else{
-            return database;
-        }
+        return (database == null || !database.isOpen()) ?
+                NotesDatabase.getInitialisedAndOpenedDatabase(currentContext) : database;
     }
 
-    private static NotesDatabase getInitialisedAndOpenedDatabase(Context currentContext){
+    public static NotesDatabase getInitialisedAndOpenedDatabase(Context currentContext){
         database = new NotesDatabase(currentContext);
         database.open(currentContext);
         return database;
@@ -98,7 +95,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase = null;
     }
 
-    public Cursor getNotesTableCursorQueryByTitle(String[] columns){
+    public Cursor getNotesTableCursor(String[] columns){
         return getNotesTableCursorQueryByTitle(null, columns);
     }
 
@@ -106,23 +103,14 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
         String columnsToSelect = this.joinColumnNames(columns);
 
-        String firstSearchTerm;
-        String secondSearchTerm;
+        final String[] searchConditions = applyWildCharsToSearchTerm(searchTerm);
 
-        if(searchTerm == null || searchTerm.isEmpty()){
-            firstSearchTerm = "_%";
-            secondSearchTerm = "";
-        }else{
-            firstSearchTerm = searchTerm + "%";
-            secondSearchTerm = "%" + searchTerm + "%";
-        }
+        final String firstHalfOfQuery = String.format("SELECT %s FROM %s WHERE %s", columnsToSelect, NOTES_TABLE_TITLE, TITLE);
 
-        final String selectColumnsFromTable = String.format("SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
-
-        final String firstQuery = String.format("%s WHERE %s LIKE '%s'",
-                selectColumnsFromTable, TITLE, firstSearchTerm);
-        final String secondQuery = String.format("%s WHERE %s LIKE '%s' AND %s NOT LIKE '%s'",
-                selectColumnsFromTable, TITLE, secondSearchTerm, TITLE, firstSearchTerm);
+        final String firstQuery = String.format("%s LIKE '%s'",
+                firstHalfOfQuery, searchConditions[0]);
+        final String secondQuery = String.format("%s LIKE '%s' AND %s NOT LIKE '%s'",
+                firstHalfOfQuery, searchConditions[1], TITLE, searchConditions[0]);
 
         Cursor cursor = accessDatabase.rawQuery(String.format(
                  "%s UNION ALL %s;",
@@ -131,6 +119,16 @@ public class NotesDatabase extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         return cursor;
+    }
+
+    private String[] applyWildCharsToSearchTerm(String searchTerm){
+        final String[] searchTermsWithWildChar = new String[2];
+        final boolean isSearchTermEmpty = searchTerm == null || searchTerm.isEmpty();
+
+        searchTermsWithWildChar[0] = isSearchTermEmpty ? "_%" : searchTerm + "%";
+        searchTermsWithWildChar[1] = isSearchTermEmpty ?  "" : "%" + searchTerm + "%";
+
+        return searchTermsWithWildChar;
     }
 
     public Note getNoteById(int id){
