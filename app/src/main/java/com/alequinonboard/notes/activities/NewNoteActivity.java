@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -89,10 +90,8 @@ public class NewNoteActivity extends NoteActivity {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                boolean ifUpdateDate = i == -1;
-                setNoteToEditValues(ifUpdateDate);
-                updateNoteInDatabase();
-                setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
+                boolean ifUpdateDate = (i == -1);
+                updateNoteInDatabase(ifUpdateDate);
                 finish();
             }
         };
@@ -117,8 +116,10 @@ public class NewNoteActivity extends NoteActivity {
         }
     }
 
-    private void updateNoteInDatabase(){
+    private void updateNoteInDatabase(boolean alterDate){
+        setNoteToEditValues(alterDate);
         database.updateNoteInDatabase(getIdOfNoteToEdit(), noteToEdit);
+        setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
     }
 
     private Note initialiseNewNote(){
