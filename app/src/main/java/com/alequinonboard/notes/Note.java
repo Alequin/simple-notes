@@ -16,6 +16,8 @@ public class Note {
     private String date;
     private boolean isFavourite;
 
+    public static final DateFormat creationDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
     public String getTitle() {
         if(title == null){
             throw new NullPointerException("title should not be null when get is called");
@@ -28,6 +30,14 @@ public class Note {
             throw new NullPointerException("title should not be null");
         }
         this.title = title;
+    }
+
+    public boolean isTitleEmpty(){
+        return title.isEmpty();
+    }
+
+    public void generateTitle(int noteNumber){
+        title = String.format("Note %02d: %s", noteNumber, this.date);
     }
 
     public String getMainText() {
@@ -55,8 +65,7 @@ public class Note {
         if(date == null){
             throw new NullPointerException("date should not be null");
         }
-        final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        this.date = dateFormat.format(date).toString();
+        this.date = creationDateFormat.format(date).toString();
     }
 
     public void setDate(String date) {

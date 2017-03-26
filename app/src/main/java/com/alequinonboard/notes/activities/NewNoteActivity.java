@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -20,7 +19,7 @@ public class NewNoteActivity extends NoteActivity {
     public static final String IF_EDIT_MODE = "IF_EDIT_MODE";
 
     private boolean editMode;
-    private Note noteToEdit;
+    private String noteToEditCreationDate;
 
     private AlertDialog editModeDateChangeDialog;
 
@@ -58,7 +57,7 @@ public class NewNoteActivity extends NoteActivity {
             case R.id.tick_icon_new_notes_activity:
                 database = initialisedAndOpenDatabaseIfRequired();
                 if(!editMode) {
-                    saveNoteToDatabase();
+                    addNoteToDatabase();
                     setResult(NotesMainActivity.UPDATE_RESULT_CODE);
                     finish();
                 }else{
@@ -99,42 +98,56 @@ public class NewNoteActivity extends NoteActivity {
 
     private void setUpEditMode(){
         editModeDateChangeDialog = buildEditModeDateChangeDialog();
-        noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+        Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
         this.setTitleViewString(noteToEdit.getTitle());
         this.setMainTextViewString(noteToEdit.getMainText());
+        noteToEditCreationDate = noteToEdit.getDate();
     }
 
-    private void saveNoteToDatabase(){
-        database.insertNoteToDatabase(initialiseNewNote());
+    private Note initialiseNewNote(Date creationDate){
+       return initialiseNewNote(Note.creationDateFormat.format(creationDate).toString());
     }
 
-    private void setNoteToEditValues(boolean ifUpdateDate){
-        noteToEdit.setTitle(getTitleStringFromView());
-        noteToEdit.setMainText(getMainTextStringFromView());
-        if(ifUpdateDate){
-            noteToEdit.setDate(new Date());
-        }
-    }
-
-    private void updateNoteInDatabase(boolean alterDate){
-        setNoteToEditValues(alterDate);
-        database.updateNoteInDatabase(getIdOfNoteToEdit(), noteToEdit);
-        setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
-    }
-
-    private Note initialiseNewNote(){
+    private Note initialiseNewNote(String creationDate){
 
         final Note newNote = new Note();
 
         newNote.setTitle(getTitleStringFromView());
         newNote.setMainText(getMainTextStringFromView());
-        newNote.setDate(new Date());
+        newNote.setDate(creationDate);
+
+        if(newNote.isTitleEmpty()){
+            newNote.generateTitle(database.countNotes()+1);
+        }
 
         return newNote;
     }
 
     private String getTitleStringFromView(){
         return ((EditText) findViewById(R.id.title_new_notes_activity)).getText().toString();
+    }
+
+    private void addNoteToDatabase(){
+        Note newNote = initialiseNewNote(new Date());
+        database.insertToNotesTable(newNote);
+        if(newNote.isFavourite()){
+            database.insertToFavouritesTable(newNote);
+        }
+    }
+
+    private void updateNoteInDatabase(boolean ifAlterDate){
+        database.updateNoteInDatabase(getIdOfNoteToEdit(), getUpdatedNote(ifAlterDate));
+        setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
+    }
+
+    private Note getUpdatedNote(boolean ifAlterDate){
+        Note noteWithUpdatedValues;
+        if(ifAlterDate){
+            noteWithUpdatedValues = initialiseNewNote(new Date());
+        }else{
+            noteWithUpdatedValues = initialiseNewNote(noteToEditCreationDate);
+        }
+        return noteWithUpdatedValues;
     }
 
     private String getMainTextStringFromView(){
@@ -152,5 +165,6 @@ public class NewNoteActivity extends NoteActivity {
     private int getIdOfNoteToEdit(){
         return getIntent().getIntExtra(ID_OF_NOTE_TO_EDIT, 0);
     }
+
 
 }

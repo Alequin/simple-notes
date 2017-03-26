@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.alequinonboard.notes.Note;
 
@@ -101,17 +102,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return note;
     }
 
-    public void insertNoteToDatabase(Note newNote){
-
-        this.insertToNotesTable(newNote);
-
-        // is note is marked as favourite add id to favourites table
-        if(newNote.isFavourite()){
-            this.insertToFavouritesTable(newNote);
-        }
-    }
-
-    private void insertToNotesTable(Note newNote){
+    public void insertToNotesTable(Note newNote){
         accessDatabase.execSQL(String.format(
                 "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
@@ -120,10 +111,13 @@ public class NotesDatabase extends SQLiteOpenHelper {
         ));
     }
 
-    private void insertToFavouritesTable(Note newNote){
+    public void insertToFavouritesTable(Note favouriteNote){
         final String getIdQuery = String.format(
-                "SELECT %s FROM %s WHERE %s = %s ORDER BY %s DESC LIMIT 1;",
-                ID, NOTES_TABLE_TITLE, TITLE, newNote.getTitle(),
+                "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1;",
+                ID, NOTES_TABLE_TITLE,
+                TITLE, favouriteNote.getTitle(),
+                MAIN_TEXT, favouriteNote.getMainText(),
+                DATE, favouriteNote.getDate(),
                 ID
         );
 
@@ -160,6 +154,19 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
         ));
 
+    }
+
+    public int countNotes(){
+
+        final String columnName = String.format("COUNT(%s)", TITLE);
+        Cursor cursor = accessDatabase.rawQuery(String.format(
+                "SELECT %s FROM %s", columnName, NOTES_TABLE_TITLE
+        ),null);
+        cursor.moveToFirst();
+
+        int noteCount = cursor.getInt(cursor.getColumnIndex(columnName));
+        cursor.close();
+        return noteCount;
     }
 
     private Note getNoteFromCursor(Cursor cursor){
