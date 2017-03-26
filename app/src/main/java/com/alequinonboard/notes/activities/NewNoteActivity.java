@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
+import com.alequinonboard.notes.SoftInputVisibilityController;
 
 import java.util.Date;
 
@@ -79,6 +80,12 @@ public class NewNoteActivity extends NoteActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SoftInputVisibilityController.hideAndResetSoftInput(this);
     }
 
     private AlertDialog buildBlankMainTextDialog(){
