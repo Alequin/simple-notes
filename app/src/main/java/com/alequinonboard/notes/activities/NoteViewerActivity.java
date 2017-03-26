@@ -27,7 +27,6 @@ public class NoteViewerActivity extends NoteActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        database = this.initialisedAndOpenDatabaseIfRequired();
         noteToShow = database.getNoteById(getCurrentNoteID());
 
         setTitleAndBodyViewText();

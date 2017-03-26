@@ -35,7 +35,6 @@ public class NewNoteActivity extends NoteActivity {
         editMode = getIntent().getBooleanExtra(IF_EDIT_MODE, false);
 
         if(editMode){
-            database = initialisedAndOpenDatabaseIfRequired();
             this.setUpEditMode();
         }
 
@@ -59,7 +58,6 @@ public class NewNoteActivity extends NoteActivity {
         switch(id){
 
             case R.id.tick_icon_new_notes_activity:
-                database = initialisedAndOpenDatabaseIfRequired();
                 // main text cannot be empty. If it is ask user for input and return
                 if(isBodyEmpty()) {
                     warnUserOfBlankBodyDialog.show();

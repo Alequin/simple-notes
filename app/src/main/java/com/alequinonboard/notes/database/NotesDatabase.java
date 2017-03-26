@@ -71,7 +71,15 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    public static NotesDatabase getInitialisedAndOpenedDatabase(Context currentContext){
+    public static NotesDatabase getDatabaseAndInitialisedIfRequired(Context currentContext){
+        if(database == null || !database.isOpen()){
+            return NotesDatabase.getInitialisedAndOpenedDatabase(currentContext);
+        }else{
+            return database;
+        }
+    }
+
+    private static NotesDatabase getInitialisedAndOpenedDatabase(Context currentContext){
         database = new NotesDatabase(currentContext);
         database.open(currentContext);
         return database;

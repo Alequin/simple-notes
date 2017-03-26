@@ -35,8 +35,6 @@ public class NotesMainActivity extends NoteActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        database = this.initialisedAndOpenDatabaseIfRequired();
-
         ListView listView = (ListView) findViewById(R.id.notes_list_main_activity);
         initialiseListCursorAndListAdapter();
         listView.setAdapter(listAdapter);
