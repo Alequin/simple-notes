@@ -22,7 +22,7 @@ public class NewNoteActivity extends NoteActivity {
     private boolean editMode;
     private String noteToEditCreationDate;
 
-    private AlertDialog warnUserOfBlankMainTextDialog;
+    private AlertDialog warnUserOfBlankBodyDialog;
     private AlertDialog editModeDateChangeDialog;
 
     @Override
@@ -39,7 +39,7 @@ public class NewNoteActivity extends NoteActivity {
             this.setUpEditMode();
         }
 
-        warnUserOfBlankMainTextDialog = this.buildBlankMainTextDialog();
+        warnUserOfBlankBodyDialog = this.buildBlankBodyDialog();
     }
 
     @Override
@@ -61,8 +61,8 @@ public class NewNoteActivity extends NoteActivity {
             case R.id.tick_icon_new_notes_activity:
                 database = initialisedAndOpenDatabaseIfRequired();
                 // main text cannot be empty. If it is ask user for input and return
-                if(isMainTextEmpty()) {
-                    warnUserOfBlankMainTextDialog.show();
+                if(isBodyEmpty()) {
+                    warnUserOfBlankBodyDialog.show();
                     break;
                 }
 
@@ -88,7 +88,7 @@ public class NewNoteActivity extends NoteActivity {
         SoftInputVisibilityController.hideAndResetSoftInput(this);
     }
 
-    private AlertDialog buildBlankMainTextDialog(){
+    private AlertDialog buildBlankBodyDialog(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.blank_main_text_dialog_message));
         return builder.create();
@@ -122,7 +122,7 @@ public class NewNoteActivity extends NoteActivity {
         editModeDateChangeDialog = buildEditModeDateChangeDialog();
         Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
         this.setTitleViewString(noteToEdit.getTitle());
-        this.setMainTextViewString(noteToEdit.getMainText());
+        this.setBodyViewString(noteToEdit.getBody());
         noteToEditCreationDate = noteToEdit.getDate();
     }
 
@@ -130,7 +130,7 @@ public class NewNoteActivity extends NoteActivity {
         return ((EditText) findViewById(R.id.title_new_notes_activity)).getText().toString();
     }
 
-    private String getMainTextStringFromView(){
+    private String getBodyStringFromView(){
         return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
     }
 
@@ -138,12 +138,12 @@ public class NewNoteActivity extends NoteActivity {
         ((EditText) findViewById(R.id.title_new_notes_activity)).setText(textToShow);
     }
 
-    private void setMainTextViewString(String textToShow){
+    private void setBodyViewString(String textToShow){
         ((EditText) findViewById(R.id.main_text_new_notes_activity)).setText(textToShow);
     }
 
-    private boolean isMainTextEmpty(){
-        return getMainTextStringFromView().isEmpty();
+    private boolean isBodyEmpty(){
+        return getBodyStringFromView().isEmpty();
     }
 
     private Note initialiseNewNote(Date creationDate){
@@ -155,7 +155,7 @@ public class NewNoteActivity extends NoteActivity {
         final Note newNote = new Note();
 
         newNote.setTitle(getTitleStringFromView());
-        newNote.setMainText(getMainTextStringFromView());
+        newNote.setBody(getBodyStringFromView());
         newNote.setDate(creationDate);
 
         if(newNote.isTitleEmpty()){

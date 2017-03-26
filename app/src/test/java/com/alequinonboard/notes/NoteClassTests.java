@@ -12,7 +12,7 @@ public class NoteClassTests {
         Note note = new Note();
 
         note.setTitle("");
-        note.setMainText("I am text");
+        note.setBody("I am text");
         note.setDate(new Date());
         return note;
     }

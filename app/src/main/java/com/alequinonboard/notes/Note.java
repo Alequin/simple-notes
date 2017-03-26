@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class Note {
 
     private String title;
-    private String mainText;
+    private String body;
     private String date;
     private boolean isFavourite;
 
@@ -40,18 +40,18 @@ public class Note {
         title = String.format("Note %02d: %s", noteNumber, this.date);
     }
 
-    public String getMainText() {
-        if(mainText == null){
+    public String getBody() {
+        if(body == null){
             throw new NullPointerException("main text should not be null when get is called");
         }
-        return mainText;
+        return body;
     }
 
-    public void setMainText(String mainText) {
-        if(mainText == null){
+    public void setBody(String body) {
+        if(body == null){
             throw new NullPointerException("main text should not be null");
         }
-        this.mainText = mainText;
+        this.body = body;
     }
 
     public String getDate() {

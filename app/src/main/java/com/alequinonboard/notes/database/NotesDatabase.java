@@ -144,7 +144,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
                 TITLE, MAIN_TEXT, DATE,
-                newNote.getTitle(), newNote.getMainText(), newNote.getDate()
+                newNote.getTitle(), newNote.getBody(), newNote.getDate()
         ));
         this.incrementTotalNotesCreated();
     }
@@ -154,7 +154,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1;",
                 ID, NOTES_TABLE_TITLE,
                 TITLE, favouriteNote.getTitle(),
-                MAIN_TEXT, favouriteNote.getMainText(),
+                MAIN_TEXT, favouriteNote.getBody(),
                 DATE, favouriteNote.getDate(),
                 ID
         );
@@ -172,7 +172,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase.execSQL(String.format(
                 "UPDATE %s SET %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
                 NOTES_TABLE_TITLE, TITLE, editedNote.getTitle(),
-                MAIN_TEXT, editedNote.getMainText(),
+                MAIN_TEXT, editedNote.getBody(),
                 DATE, editedNote.getDate(),
                 ID, id
         ));
@@ -230,7 +230,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private Note getNoteFromCursor(Cursor cursor){
         Note note = new Note();
         note.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
-        note.setMainText(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
+        note.setBody(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
         note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
         return note;
     }

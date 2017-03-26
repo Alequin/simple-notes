@@ -30,7 +30,7 @@ public class NoteViewerActivity extends NoteActivity {
         database = this.initialisedAndOpenDatabaseIfRequired();
         noteToShow = database.getNoteById(getCurrentNoteID());
 
-        displayNoteTitleAndMainText();
+        setTitleAndBodyViewText();
         dateCreatedDialog = getDateCreatedDialog();
     }
 
@@ -72,21 +72,8 @@ public class NoteViewerActivity extends NoteActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
-            updateNote();
+            updateNoteTitleAndBodyViews();
         }
-    }
-
-    private void updateNote() {
-        noteToShow = database.getNoteById(getCurrentNoteID());
-        displayNoteTitleAndMainText();
-        //result is set as if update is called the note must have changed. The list view must also
-        //change on return
-        setResult(NotesMainActivity.UPDATE_RESULT_CODE);
-    }
-
-    private void displayNoteTitleAndMainText(){
-        setTitleText(noteToShow);
-        setMainText(noteToShow);
     }
 
     private AlertDialog getDateCreatedDialog() {
@@ -99,6 +86,27 @@ public class NoteViewerActivity extends NoteActivity {
         return builder.create();
     }
 
+    private void setTitleAndBodyViewText(){
+        setTitleViewText(noteToShow);
+        setBodyViewText(noteToShow);
+    }
+
+    private void setTitleViewText(Note note){
+        ((TextView) findViewById(R.id.title_viewer_activity)).setText(note.getTitle());
+    }
+
+    private void setBodyViewText(Note note){
+        ((TextView) findViewById(R.id.main_text_viewer_activity)).setText(note.getBody());;
+    }
+
+    private void updateNoteTitleAndBodyViews() {
+        noteToShow = database.getNoteById(getCurrentNoteID());
+        setTitleAndBodyViewText();
+        //result is set as if update is called the note must have changed. The list view must also
+        //change on return
+        setResult(NotesMainActivity.UPDATE_RESULT_CODE);
+    }
+
     private void openNewNoteActivityInEditMode() {
 
         Intent startNewNoteActivity = new Intent(this, NewNoteActivity.class);
@@ -107,14 +115,6 @@ public class NoteViewerActivity extends NoteActivity {
 
         startActivityForResult(startNewNoteActivity, UPDATE_REQUEST_CODE);
 
-    }
-
-    private void setTitleText(Note note){
-        ((TextView) findViewById(R.id.title_viewer_activity)).setText(note.getTitle());
-    }
-
-    private void setMainText(Note note){
-        ((TextView) findViewById(R.id.main_text_viewer_activity)).setText(note.getMainText());;
     }
 
     private int getCurrentNoteID(){
