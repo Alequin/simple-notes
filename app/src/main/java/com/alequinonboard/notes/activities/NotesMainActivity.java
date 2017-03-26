@@ -3,6 +3,7 @@ package com.alequinonboard.notes.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -103,6 +104,7 @@ public class NotesMainActivity extends NoteActivity {
         return new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
                 updateListViewWithSearchTerm(getSearchBarText());
                 return false;
             }
@@ -142,9 +144,26 @@ public class NotesMainActivity extends NoteActivity {
     }
 
     private void updateListViewWithSearchTerm(String searchTerm){
-        listCursor.close();
-        listCursor = getListCursorWithSearchTerm(searchTerm);
-        listAdapter.swapCursor(listCursor);
+        new UpdateListInNewThread().execute(searchTerm);
+    }
+
+    private class UpdateListInNewThread extends AsyncTask<String, Void, Void>{
+
+        private Cursor threadCursor;
+
+        @Override
+        protected Void doInBackground(String...searchTerm) {
+            threadCursor = getListCursorWithSearchTerm(searchTerm[0]);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            listCursor.close();
+            listCursor = threadCursor;
+            listAdapter.swapCursor(listCursor);
+        }
     }
 
     private Cursor getListCursor(){
