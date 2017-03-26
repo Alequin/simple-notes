@@ -106,6 +106,9 @@ public class Note {
         if(month < 1 || month > 12){
             throw new IllegalArgumentException(String.format(errorMessage, "month"));
         }
-        //User can edit year to be any value they want as long as it is numerical
+        final int year = Integer.parseInt(date.substring(6));
+        if(year < 2017){
+            throw new IllegalArgumentException(String.format(errorMessage, "year"));
+        }
     }
 }

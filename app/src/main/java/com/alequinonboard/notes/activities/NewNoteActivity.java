@@ -21,6 +21,7 @@ public class NewNoteActivity extends NoteActivity {
     private boolean editMode;
     private String noteToEditCreationDate;
 
+    private AlertDialog blankMainTextDialog;
     private AlertDialog editModeDateChangeDialog;
 
     @Override
@@ -36,6 +37,8 @@ public class NewNoteActivity extends NoteActivity {
             database = initialisedAndOpenDatabaseIfRequired();
             this.setUpEditMode();
         }
+
+        blankMainTextDialog = this.buildBlankMainTextDialog();
     }
 
     @Override
@@ -56,6 +59,11 @@ public class NewNoteActivity extends NoteActivity {
 
             case R.id.tick_icon_new_notes_activity:
                 database = initialisedAndOpenDatabaseIfRequired();
+                // main text cannot be empty. If it is ask user for input and return
+                if(isMainTextEmpty()) {
+                    askUserForMainTextInput();
+                    return super.onOptionsItemSelected(item);
+                }
                 if(!editMode) {
                     addNoteToDatabase();
                     setResult(NotesMainActivity.UPDATE_RESULT_CODE);
@@ -72,11 +80,20 @@ public class NewNoteActivity extends NoteActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private AlertDialog buildBlankMainTextDialog(){
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(getString(R.string.blank_main_text_dialog_message));
+
+        return builder.create();
+    }
+
     private AlertDialog buildEditModeDateChangeDialog(){
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        final AlertDialog.OnClickListener listener = getEditDialogListener();
+        final AlertDialog.OnClickListener listener = getDialogListenerForEditModeDateChangeDialog();
 
         builder.setMessage(getString(R.string.date_change_dialog_message));
         builder.setPositiveButton(getString(R.string.yes), listener);
@@ -85,7 +102,7 @@ public class NewNoteActivity extends NoteActivity {
         return builder.create();
     }
 
-    private DialogInterface.OnClickListener getEditDialogListener(){
+    private DialogInterface.OnClickListener getDialogListenerForEditModeDateChangeDialog(){
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -127,6 +144,22 @@ public class NewNoteActivity extends NoteActivity {
         return ((EditText) findViewById(R.id.title_new_notes_activity)).getText().toString();
     }
 
+    private String getMainTextStringFromView(){
+        return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
+    }
+
+    private void setTitleViewString(String textToShow){
+        ((EditText) findViewById(R.id.title_new_notes_activity)).setText(textToShow);
+    }
+
+    private void setMainTextViewString(String textToShow){
+        ((EditText) findViewById(R.id.main_text_new_notes_activity)).setText(textToShow);
+    }
+
+    private boolean isMainTextEmpty(){
+        return getMainTextStringFromView().isEmpty();
+    }
+
     private void addNoteToDatabase(){
         Note newNote = initialiseNewNote(new Date());
         database.insertToNotesTable(newNote);
@@ -150,21 +183,11 @@ public class NewNoteActivity extends NoteActivity {
         return noteWithUpdatedValues;
     }
 
-    private String getMainTextStringFromView(){
-        return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
-    }
-
-    private void setTitleViewString(String textToShow){
-        ((EditText) findViewById(R.id.title_new_notes_activity)).setText(textToShow);
-    }
-
-    private void setMainTextViewString(String textToShow){
-        ((EditText) findViewById(R.id.main_text_new_notes_activity)).setText(textToShow);
-    }
-
     private int getIdOfNoteToEdit(){
         return getIntent().getIntExtra(ID_OF_NOTE_TO_EDIT, 0);
     }
 
-
+    private void askUserForMainTextInput(){
+        blankMainTextDialog.show();
+    }
 }

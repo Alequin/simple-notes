@@ -18,6 +18,9 @@
 
     <string name="date_created_dialog_title">Date Created</string>
     <string name="date_change_dialog_message">Change the creation date to today?</string>
+    <string name="blank_main_text_dialog_message">
+        Add some text to the body of your note before saving
+    </string>
 
 
     <string name="yes">Yes</string>
