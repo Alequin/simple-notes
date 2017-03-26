@@ -90,11 +90,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase = null;
     }
 
-    public Cursor getNotesTableCursorSearchByTitle(String[] columns){
-        return getNotesTableCursorSearchByTitle(null, columns);
+    public Cursor getNotesTableCursorQueryByTitle(String[] columns){
+        return getNotesTableCursorQueryByTitle(null, columns);
     }
 
-    public Cursor getNotesTableCursorSearchByTitle(String searchTerm, String[] columns){
+    public Cursor getNotesTableCursorQueryByTitle(String searchTerm, String[] columns){
 
         String columnsToSelect = this.joinColumnNames(columns);
 
