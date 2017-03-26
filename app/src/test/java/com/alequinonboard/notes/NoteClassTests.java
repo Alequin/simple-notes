@@ -20,7 +20,7 @@ public class NoteClassTests {
     @Test
     public void testNoteTitleGeneration(){
         Note note = getNoteWithBlankTitle();
-        note.generateTitle(5);
+        note.generateAndSetNewTitle(5);
         assertEquals("Note 05: 26/03/2017", note.getTitle());
     }
 }

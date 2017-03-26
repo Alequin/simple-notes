@@ -36,7 +36,7 @@ public class Note {
         return title.isEmpty();
     }
 
-    public void generateTitle(int noteNumber){
+    public void generateAndSetNewTitle(int noteNumber){
         title = String.format("Note %02d: %s", noteNumber, this.date);
     }
 

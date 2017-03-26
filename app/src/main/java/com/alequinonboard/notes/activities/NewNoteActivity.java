@@ -21,7 +21,7 @@ public class NewNoteActivity extends NoteActivity {
     private boolean editMode;
     private String noteToEditCreationDate;
 
-    private AlertDialog blankMainTextDialog;
+    private AlertDialog warnUserOfBlankMainTextDialog;
     private AlertDialog editModeDateChangeDialog;
 
     @Override
@@ -38,7 +38,7 @@ public class NewNoteActivity extends NoteActivity {
             this.setUpEditMode();
         }
 
-        blankMainTextDialog = this.buildBlankMainTextDialog();
+        warnUserOfBlankMainTextDialog = this.buildBlankMainTextDialog();
     }
 
     @Override
@@ -61,13 +61,14 @@ public class NewNoteActivity extends NoteActivity {
                 database = initialisedAndOpenDatabaseIfRequired();
                 // main text cannot be empty. If it is ask user for input and return
                 if(isMainTextEmpty()) {
-                    askUserForMainTextInput();
-                    return super.onOptionsItemSelected(item);
+                    warnUserOfBlankMainTextDialog.show();
+                    break;
                 }
+
                 if(!editMode) {
-                    addNoteToDatabase();
-                    setResult(NotesMainActivity.UPDATE_RESULT_CODE);
-                    finish();
+                    this.addNoteToDatabase();
+                    this.setResult(NotesMainActivity.UPDATE_RESULT_CODE);
+                    this.finish();
                 }else{
                     editModeDateChangeDialog.show();
                 }
@@ -81,11 +82,8 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private AlertDialog buildBlankMainTextDialog(){
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setMessage(getString(R.string.blank_main_text_dialog_message));
-
         return builder.create();
     }
 
@@ -121,25 +119,6 @@ public class NewNoteActivity extends NoteActivity {
         noteToEditCreationDate = noteToEdit.getDate();
     }
 
-    private Note initialiseNewNote(Date creationDate){
-       return initialiseNewNote(Note.creationDateFormat.format(creationDate).toString());
-    }
-
-    private Note initialiseNewNote(String creationDate){
-
-        final Note newNote = new Note();
-
-        newNote.setTitle(getTitleStringFromView());
-        newNote.setMainText(getMainTextStringFromView());
-        newNote.setDate(creationDate);
-
-        if(newNote.isTitleEmpty()){
-            newNote.generateTitle(database.getNumberOfNotesCreated()+1);
-        }
-
-        return newNote;
-    }
-
     private String getTitleStringFromView(){
         return ((EditText) findViewById(R.id.title_new_notes_activity)).getText().toString();
     }
@@ -160,20 +139,26 @@ public class NewNoteActivity extends NoteActivity {
         return getMainTextStringFromView().isEmpty();
     }
 
-    private void addNoteToDatabase(){
-        Note newNote = initialiseNewNote(new Date());
-        database.insertToNotesTable(newNote);
-        if(newNote.isFavourite()){
-            database.insertToFavouritesTable(newNote);
+    private Note initialiseNewNote(Date creationDate){
+       return initialiseNewNote(Note.creationDateFormat.format(creationDate).toString());
+    }
+
+    private Note initialiseNewNote(String creationDate){
+
+        final Note newNote = new Note();
+
+        newNote.setTitle(getTitleStringFromView());
+        newNote.setMainText(getMainTextStringFromView());
+        newNote.setDate(creationDate);
+
+        if(newNote.isTitleEmpty()){
+            newNote.generateAndSetNewTitle(database.getNumberOfNotesCreated()+1);
         }
+
+        return newNote;
     }
 
-    private void updateNoteInDatabase(boolean ifAlterDate){
-        database.updateNoteInDatabase(getIdOfNoteToEdit(), getUpdatedNote(ifAlterDate));
-        setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
-    }
-
-    private Note getUpdatedNote(boolean ifAlterDate){
+    private Note getNoteWithEditedValues(boolean ifAlterDate){
         Note noteWithUpdatedValues;
         if(ifAlterDate){
             noteWithUpdatedValues = initialiseNewNote(new Date());
@@ -183,11 +168,20 @@ public class NewNoteActivity extends NoteActivity {
         return noteWithUpdatedValues;
     }
 
-    private int getIdOfNoteToEdit(){
-        return getIntent().getIntExtra(ID_OF_NOTE_TO_EDIT, 0);
+    private void addNoteToDatabase(){
+        Note newNote = initialiseNewNote(new Date());
+        database.insertToNotesTable(newNote);
+        if(newNote.isFavourite()){
+            database.insertToFavouritesTable(newNote);
+        }
     }
 
-    private void askUserForMainTextInput(){
-        blankMainTextDialog.show();
+    private void updateNoteInDatabase(boolean ifAlterDate){
+        database.updateNoteInDatabase(getIdOfNoteToEdit(), getNoteWithEditedValues(ifAlterDate));
+        setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
+    }
+
+    private int getIdOfNoteToEdit(){
+        return getIntent().getIntExtra(ID_OF_NOTE_TO_EDIT, 0);
     }
 }
