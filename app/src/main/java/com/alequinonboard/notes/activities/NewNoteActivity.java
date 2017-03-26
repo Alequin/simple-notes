@@ -134,7 +134,7 @@ public class NewNoteActivity extends NoteActivity {
         newNote.setDate(creationDate);
 
         if(newNote.isTitleEmpty()){
-            newNote.generateTitle(database.countNotes()+1);
+            newNote.generateTitle(database.getNumberOfNotesCreated()+1);
         }
 
         return newNote;

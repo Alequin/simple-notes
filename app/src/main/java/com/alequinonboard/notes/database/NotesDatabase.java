@@ -19,6 +19,8 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static NotesDatabase database;
     private SQLiteDatabase accessDatabase;
 
+    private int totalNotesMade;
+
     public static final String ID = "_id";
 
     public static final String NOTES_TABLE_TITLE = "notes";
@@ -28,6 +30,9 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public static final String FAVOURITES_TABLE_TITLE = "favourites";
     public static final String NOTES_ID = "notes_id";
+
+    public static final String NOTE_COUNTER_TABLE_TITLE = "note_counter";
+    public static final String NUMBER_OF_NOTES = "note_counter";
 
     public NotesDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +53,16 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "%s INTEGER);",
                 FAVOURITES_TABLE_TITLE, ID, NOTES_ID
+        ));
+
+        database.execSQL(String.format(
+                "CREATE TABLE %s (" +
+                "%s INTEGER);",
+                NOTE_COUNTER_TABLE_TITLE, NUMBER_OF_NOTES
+        ));
+
+        database.execSQL(String.format(
+                "INSERT INTO %s VALUES (%s)", NOTE_COUNTER_TABLE_TITLE, 0
         ));
     }
 
@@ -95,7 +110,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         }
 
         final String selectColumnsFromTable = String.format("SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
-        
+
         final String firstQuery = String.format("%s WHERE %s LIKE '%s'",
                 selectColumnsFromTable, TITLE, firstSearchTerm);
         final String secondQuery = String.format("%s WHERE %s LIKE '%s' AND %s NOT LIKE '%s'",
@@ -131,6 +146,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 TITLE, MAIN_TEXT, DATE,
                 newNote.getTitle(), newNote.getMainText(), newNote.getDate()
         ));
+        this.incrementTotalNotesCreated();
     }
 
     public void insertToFavouritesTable(Note favouriteNote){
@@ -178,7 +194,15 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    public int countNotes(){
+    private void incrementTotalNotesCreated(){
+        accessDatabase.execSQL(String.format(
+                "UPDATE %s SET %s = %s + 1",
+                NOTE_COUNTER_TABLE_TITLE, NUMBER_OF_NOTES, NUMBER_OF_NOTES
+        ));
+
+    }
+
+    public int getNumberOfNotesInTable(){
 
         final String columnName = String.format("COUNT(%s)", TITLE);
         Cursor cursor = accessDatabase.rawQuery(String.format(
@@ -187,6 +211,18 @@ public class NotesDatabase extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         int noteCount = cursor.getInt(cursor.getColumnIndex(columnName));
+        cursor.close();
+        return noteCount;
+    }
+
+    public int getNumberOfNotesCreated(){
+
+        Cursor cursor = accessDatabase.rawQuery(String.format(
+                "SELECT %s FROM %s", NUMBER_OF_NOTES, NOTE_COUNTER_TABLE_TITLE
+        ),null);
+        cursor.moveToFirst();
+
+        int noteCount = cursor.getInt(cursor.getColumnIndex(NUMBER_OF_NOTES));
         cursor.close();
         return noteCount;
     }

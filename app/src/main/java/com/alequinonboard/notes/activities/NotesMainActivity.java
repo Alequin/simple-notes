@@ -71,13 +71,11 @@ public class NotesMainActivity extends NoteActivity {
 
             case R.id.search_icon_action_bar:
                 if(this.isSearchBarVisible()){
-                    this.hideSearchBar();
+                    this.hideSearchBarAndUpdateList();
                     SoftInputVisibilityController.hideAndResetSoftInput(this);
-                    this.updateListView();
                 }else{
-                    this.showSearchBar();
+                    this.showSearchBarAndUpdateList();
                     SoftInputVisibilityController.showSoftInput(this);
-                    this.updateListViewWithSearchTerm(getSearchBarText());
                 }
                 break;
 
@@ -125,8 +123,18 @@ public class NotesMainActivity extends NoteActivity {
         searchBar.requestFocus();
     }
 
+    private void showSearchBarAndUpdateList(){
+        this.showSearchBar();
+        this.updateListViewWithSearchTerm(getSearchBarText());
+    }
+
     private void hideSearchBar(){
         (findViewById(R.id.search_bar_layout_main_activity)).setVisibility(View.GONE);
+    }
+
+    private void hideSearchBarAndUpdateList(){
+        this.hideSearchBar();
+        this.updateListView();
     }
 
     private void updateListView(){
@@ -169,5 +177,13 @@ public class NotesMainActivity extends NoteActivity {
             updateListView();
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isSearchBarVisible()){
+            this.hideSearchBarAndUpdateList();
+        }
     }
 }
