@@ -17,4 +17,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="title_text_style">
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
+    <style name="main_text_style">
+        <item name="android:gravity">top</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
 </resources>

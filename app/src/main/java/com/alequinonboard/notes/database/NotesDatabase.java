@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.alequinonboard.notes.Note;
 
@@ -76,12 +75,35 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase = null;
     }
 
-    public Cursor getNotesTableCursor(String...columns){
+    public Cursor getNotesTableCursorSearchByTitle(String[] columns){
+        return getNotesTableCursorSearchByTitle(null, columns);
+    }
+
+    public Cursor getNotesTableCursorSearchByTitle(String searchTerm, String[] columns){
 
         String columnsToSelect = this.joinColumnNames(columns);
 
+        String firstSearchTerm;
+        String secondSearchTerm;
+
+        if(searchTerm == null || searchTerm.isEmpty()){
+            firstSearchTerm = "_%";
+            secondSearchTerm = "";
+        }else{
+            firstSearchTerm = searchTerm + "%";
+            secondSearchTerm = "%" + searchTerm + "%";
+        }
+
+        final String selectColumnsFromTable = String.format("SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
+        
+        final String firstQuery = String.format("%s WHERE %s LIKE '%s'",
+                selectColumnsFromTable, TITLE, firstSearchTerm);
+        final String secondQuery = String.format("%s WHERE %s LIKE '%s' AND %s NOT LIKE '%s'",
+                selectColumnsFromTable, TITLE, secondSearchTerm, TITLE, firstSearchTerm);
+
         Cursor cursor = accessDatabase.rawQuery(String.format(
-                "SELECT %s FROM %s;", columnsToSelect, NOTES_TABLE_TITLE
+                 "%s UNION ALL %s;",
+                firstQuery, secondQuery
         ),null);
         cursor.moveToFirst();
 

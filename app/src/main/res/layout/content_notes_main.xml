@@ -8,10 +8,36 @@
     tools:context="com.alequinonboard.notes.activities.NotesMainActivity"
     tools:showIn="@layout/activity_notes_main">
 
+    <RelativeLayout
+        android:id="@id/search_bar_layout_main_activity"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="5dp"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/raised_white_tile_reduced_height"/>
+
+        <EditText
+            android:id="@id/search_bar_main_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:textSize="@dimen/normal_text_size"
+            android:maxLines="1"
+            android:background="@android:color/transparent"/>
+
+    </RelativeLayout>
+
     <ListView
         android:id="@id/notes_list_main_activity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_bar_layout_main_activity">
     </ListView>
 
 </RelativeLayout>

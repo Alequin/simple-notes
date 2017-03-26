@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.alequinonboard.notes.R;
+import com.alequinonboard.notes.SoftInputVisibilityController;
 import com.alequinonboard.notes.database.NotesDatabase;
 
 public class NotesMainActivity extends NoteActivity {
@@ -42,6 +44,9 @@ public class NotesMainActivity extends NoteActivity {
 
         database = this.initialisedAndOpenDatabaseIfRequired();
         this.buildListView();
+
+        EditText searchBox = (EditText)findViewById(R.id.search_bar_main_activity);
+        searchBox.setOnKeyListener(getSearchBarKeyListener());
     }
 
     @Override
@@ -65,6 +70,15 @@ public class NotesMainActivity extends NoteActivity {
                 break;
 
             case R.id.search_icon_action_bar:
+                if(this.isSearchBarVisible()){
+                    this.hideSearchBar();
+                    SoftInputVisibilityController.hideAndResetSoftInput(this);
+                    this.updateListView();
+                }else{
+                    this.showSearchBar();
+                    SoftInputVisibilityController.showSoftInput(this);
+                    this.updateListViewWithSearchTerm(getSearchBarText());
+                }
                 break;
 
             case R.id.action_settings:
@@ -87,14 +101,50 @@ public class NotesMainActivity extends NoteActivity {
         listView.setOnItemClickListener(getListListener());
     }
 
+    private View.OnKeyListener getSearchBarKeyListener(){
+        return new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                updateListViewWithSearchTerm(getSearchBarText());
+                return false;
+            }
+        };
+    }
+
+    private boolean isSearchBarVisible(){
+        return (findViewById(R.id.search_bar_layout_main_activity)).getVisibility() == View.VISIBLE;
+    }
+
+    private String getSearchBarText(){
+        return ((EditText)findViewById(R.id.search_bar_main_activity)).getText().toString();
+    }
+
+    private void showSearchBar(){
+        View searchBar = findViewById(R.id.search_bar_layout_main_activity);
+        searchBar.setVisibility(View.VISIBLE);
+        searchBar.requestFocus();
+    }
+
+    private void hideSearchBar(){
+        (findViewById(R.id.search_bar_layout_main_activity)).setVisibility(View.GONE);
+    }
+
     private void updateListView(){
+        this.updateListViewWithSearchTerm(null);
+    }
+
+    private void updateListViewWithSearchTerm(String searchTerm){
         listCursor.close();
-        listCursor = getListCursor();
+        listCursor = getListCursorWithSearchTerm(searchTerm);
         listAdapter.swapCursor(listCursor);
     }
 
     private Cursor getListCursor(){
-        return database.getNotesTableCursor(NotesDatabase.ID, NotesDatabase.TITLE);
+        return database.getNotesTableCursorSearchByTitle(null, new String[]{NotesDatabase.ID, NotesDatabase.TITLE});
+    }
+
+    private Cursor getListCursorWithSearchTerm(String searchTerm){
+        return database.getNotesTableCursorSearchByTitle(searchTerm, new String[]{NotesDatabase.ID, NotesDatabase.TITLE});
     }
 
     private AdapterView.OnItemClickListener getListListener(){

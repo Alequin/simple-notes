@@ -34,11 +34,9 @@
             android:id="@id/title_new_notes_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="@dimen/normal_text_size"
-            android:gravity="center"
             android:hint="@string/title"
-            android:textStyle="bold"
             android:background="@android:color/transparent"
+            style="@style/title_text_style"
             android:maxLength="25"/>
 
     </RelativeLayout>
@@ -66,9 +64,8 @@
                 android:layout_height="match_parent"
                 android:padding="@dimen/basic_padding"
                 android:hint="@string/enter_note"
-                android:gravity="top"
                 android:background="@android:color/transparent"
-                android:textSize="@dimen/normal_text_size"
+                style="@style/main_text_style"
                 />
 
     </RelativeLayout>

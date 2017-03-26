@@ -66,4 +66,14 @@
         type="id"
         />
 
+    <item
+        name="search_bar_layout_main_activity"
+        type="id"
+        />
+
+    <item
+        name="search_bar_main_activity"
+        type="id"
+        />
+
 </resources>
