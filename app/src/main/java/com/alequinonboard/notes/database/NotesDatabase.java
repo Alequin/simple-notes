@@ -104,45 +104,33 @@ public class NotesDatabase extends SQLiteOpenHelper {
         String columnsToSelect = this.joinColumnNames(columns);
 
         Cursor cursor;
+        final String baseQuery = String.format(
+                "SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
+
         if(searchTerm == null || searchTerm.isEmpty()){
-            cursor = accessDatabase.rawQuery(String.format(
-                    "SELECT %s FROM %s;",
-                    columnsToSelect, NOTES_TABLE_TITLE
-            ),null);
+            cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
             final String querySearchTermAtStart = String.format(
-                    "SELECT %s FROM %s WHERE %s = '%s' OR %s LIKE '%s'",
-                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, searchTerm, TITLE, searchTerm + "%"
+                    "%s WHERE %s = '%s' OR %s LIKE '%s'",
+                    baseQuery, TITLE, searchTerm, TITLE, searchTerm + "%"
             );
             final String querySearchTermInMiddle = String.format(
-                    "SELECT %s FROM %s WHERE %s LIKE '%s'",
-                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, "%_"+searchTerm+"_%"
+                    "%s WHERE %s LIKE '%s'",
+                    baseQuery, TITLE, "%_"+searchTerm+"_%"
             );
             final String querySearchTermAtEnd = String.format(
-                    "SELECT %s FROM %s WHERE %s LIKE '%s';",
-                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, "%_"+searchTerm
+                    "%s WHERE %s LIKE '%s'",
+                    baseQuery, TITLE, "%_"+searchTerm
             );
 
             cursor = accessDatabase.rawQuery(String.format(
-                    "%s UNION ALL %s UNION ALL %s",
+                    "%s UNION ALL %s UNION ALL %s;",
                     querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
             ),null);
-
-
         }
         cursor.moveToFirst();
 
         return cursor;
-    }
-
-    private String[] applyWildCharsToSearchTerm(String searchTerm){
-        final String[] searchTermsWithWildChar = new String[2];
-        final boolean isSearchTermEmpty = searchTerm == null || searchTerm.isEmpty();
-
-        searchTermsWithWildChar[0] = isSearchTermEmpty ? "_%" : searchTerm + "%";
-        searchTermsWithWildChar[1] = isSearchTermEmpty ?  "" : "%" + searchTerm + "%";
-
-        return searchTermsWithWildChar;
     }
 
     public Note getNoteById(int id){
@@ -262,7 +250,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         for(int a=0; a<length; a++){
             //if the loop is on the final iteration don't add a comma on the end
             if(a != length-1){
-                columnsToSelect += columns[a] + ",";
+                columnsToSelect += columns[a] + ", ";
             }else{
                 columnsToSelect += columns[a];
             }
