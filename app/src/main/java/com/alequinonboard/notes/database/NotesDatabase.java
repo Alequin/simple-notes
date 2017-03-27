@@ -160,7 +160,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
     public void insertLastAddedNoteToFavouritesTable(Note favouriteNote){
 
         final String getIdQuery = String.format(
-                "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1;",
+                "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1",
                 ID, NOTES_TABLE_TITLE,
                 TITLE, favouriteNote.getTitle(),
                 MAIN_TEXT, favouriteNote.getBody(),
@@ -171,7 +171,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase.execSQL(String.format(
                 "INSERT INTO %s (%s) VALUES ((%s));",
                 FAVOURITES_TABLE_TITLE,
-                ID,
+                NOTES_ID,
                 getIdQuery
         ));
     }

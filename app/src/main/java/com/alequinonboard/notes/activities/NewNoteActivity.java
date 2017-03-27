@@ -3,11 +3,13 @@ package com.alequinonboard.notes.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.alequinonboard.notes.BooleanMenuItem;
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.SoftInputVisibilityController;
@@ -24,6 +26,8 @@ public class NewNoteActivity extends NoteActivity {
 
     private AlertDialog warnUserOfBlankBodyDialog;
     private AlertDialog editModeDateChangeDialog;
+
+    private BooleanMenuItem favouriteMenuIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,11 @@ public class NewNoteActivity extends NoteActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_new_notes, menu);
+
+        favouriteMenuIcon = new BooleanMenuItem(menu.getItem(0));
+        favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
+        favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
+
         return true;
     }
 
@@ -74,6 +83,11 @@ public class NewNoteActivity extends NoteActivity {
                 break;
 
             case R.id.favourite_icon_new_notes_activity:
+                if(favouriteMenuIcon.isStateTrue()){
+                    favouriteMenuIcon.setStateFalse();
+                }else{
+                    favouriteMenuIcon.setStateTrue();
+                }
                 break;
         }
 
@@ -155,6 +169,7 @@ public class NewNoteActivity extends NoteActivity {
         newNote.setTitle(getTitleStringFromView());
         newNote.setBody(getBodyStringFromView());
         newNote.setDate(creationDate);
+        newNote.setFavourite(favouriteMenuIcon.isStateTrue());
 
         if(newNote.isTitleEmpty()){
             newNote.generateAndSetNewTitle(database.getTotalNumberOfNotesCreated()+1);

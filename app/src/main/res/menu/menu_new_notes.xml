@@ -15,5 +15,4 @@
         android:title="@string/search_icon_title"
         app:showAsAction="always"/>
 
-
 </menu>
