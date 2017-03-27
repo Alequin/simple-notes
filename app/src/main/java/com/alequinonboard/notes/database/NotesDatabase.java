@@ -103,19 +103,33 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
         String columnsToSelect = this.joinColumnNames(columns);
 
-        final String[] searchConditions = applyWildCharsToSearchTerm(searchTerm);
+        Cursor cursor;
+        if(searchTerm == null || searchTerm.isEmpty()){
+            cursor = accessDatabase.rawQuery(String.format(
+                    "SELECT %s FROM %s;",
+                    columnsToSelect, NOTES_TABLE_TITLE
+            ),null);
+        }else{
+            final String querySearchTermAtStart = String.format(
+                    "SELECT %s FROM %s WHERE %s = '%s' OR %s LIKE '%s'",
+                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, searchTerm, TITLE, searchTerm + "%"
+            );
+            final String querySearchTermInMiddle = String.format(
+                    "SELECT %s FROM %s WHERE %s LIKE '%s'",
+                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, "%_"+searchTerm+"_%"
+            );
+            final String querySearchTermAtEnd = String.format(
+                    "SELECT %s FROM %s WHERE %s LIKE '%s';",
+                    columnsToSelect, NOTES_TABLE_TITLE, TITLE, "%_"+searchTerm
+            );
 
-        final String firstHalfOfQuery = String.format("SELECT %s FROM %s WHERE %s", columnsToSelect, NOTES_TABLE_TITLE, TITLE);
+            cursor = accessDatabase.rawQuery(String.format(
+                    "%s UNION ALL %s UNION ALL %s",
+                    querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
+            ),null);
 
-        final String firstQuery = String.format("%s LIKE '%s'",
-                firstHalfOfQuery, searchConditions[0]);
-        final String secondQuery = String.format("%s LIKE '%s' AND %s NOT LIKE '%s'",
-                firstHalfOfQuery, searchConditions[1], TITLE, searchConditions[0]);
 
-        Cursor cursor = accessDatabase.rawQuery(String.format(
-                 "%s UNION ALL %s;",
-                firstQuery, secondQuery
-        ),null);
+        }
         cursor.moveToFirst();
 
         return cursor;
@@ -155,7 +169,8 @@ public class NotesDatabase extends SQLiteOpenHelper {
         this.incrementTotalNotesCreated();
     }
 
-    public void insertToFavouritesTable(Note favouriteNote){
+    public void insertLastAddedNoteToFavouritesTable(Note favouriteNote){
+
         final String getIdQuery = String.format(
                 "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1;",
                 ID, NOTES_TABLE_TITLE,
@@ -208,7 +223,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    public int getNumberOfNotesInTable(){
+    public int getNumberOfCurrentNotes(){
 
         final String columnName = String.format("COUNT(%s)", TITLE);
         Cursor cursor = accessDatabase.rawQuery(String.format(
@@ -221,7 +236,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return noteCount;
     }
 
-    public int getNumberOfNotesCreated(){
+    public int getTotalNumberOfNotesCreated(){
 
         Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s FROM %s", NUMBER_OF_NOTES, NOTE_COUNTER_TABLE_TITLE

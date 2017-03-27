@@ -157,7 +157,7 @@ public class NewNoteActivity extends NoteActivity {
         newNote.setDate(creationDate);
 
         if(newNote.isTitleEmpty()){
-            newNote.generateAndSetNewTitle(database.getNumberOfNotesCreated()+1);
+            newNote.generateAndSetNewTitle(database.getTotalNumberOfNotesCreated()+1);
         }
 
         return newNote;
@@ -177,7 +177,7 @@ public class NewNoteActivity extends NoteActivity {
         Note newNote = initialiseNewNote(new Date());
         database.insertToNotesTable(newNote);
         if(newNote.isFavourite()){
-            database.insertToFavouritesTable(newNote);
+            database.insertLastAddedNoteToFavouritesTable(newNote);
         }
     }
 
