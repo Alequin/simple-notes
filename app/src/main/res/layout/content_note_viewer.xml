@@ -30,11 +30,36 @@
             android:scaleType="centerCrop"
             android:src="@drawable/raised_white_tile_reduced_height"/>
 
-        <TextView
-            android:id="@id/title_viewer_activity"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@id/favourite_icon_viewer_activity"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
-            style="@style/title_text_style"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/fav_green_icon"
+            android:visibility="gone"/>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/favourite_icon_viewer_activity"
+            android:layout_toEndOf="@id/favourite_icon_viewer_activity"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            >
+
+            <TextView
+                android:id="@id/title_viewer_activity"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:maxLines="1"
+                style="@style/title_text_style"
+                android:text="wqqq"/>
+
+        </HorizontalScrollView>
+
 
     </RelativeLayout>
 

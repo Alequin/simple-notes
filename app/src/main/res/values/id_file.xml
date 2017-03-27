@@ -76,4 +76,14 @@
         type="id"
         />
 
+    <item
+        name="favourite_icon_viewer_activity"
+        type="id"
+        />
+
+    <item
+        name="title_layout_viewer_activity"
+        type="id"
+        />
+
 </resources>

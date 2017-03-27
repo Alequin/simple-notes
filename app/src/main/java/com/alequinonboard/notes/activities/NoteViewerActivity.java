@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alequinonboard.notes.Note;
@@ -31,6 +34,12 @@ public class NoteViewerActivity extends NoteActivity {
 
         setTitleAndBodyViewText();
         dateCreatedDialog = getDateCreatedDialog();
+
+        if(noteToShow.isFavourite()){
+            showFavouriteIcon();
+        }else{
+            hideFavouriteIcon();
+        }
     }
 
     @Override
@@ -73,6 +82,14 @@ public class NoteViewerActivity extends NoteActivity {
         if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
             updateNoteTitleAndBodyViews();
         }
+    }
+    
+    private void showFavouriteIcon(){
+        findViewById(R.id.favourite_icon_viewer_activity).setVisibility(View.VISIBLE);
+    }
+
+    private void hideFavouriteIcon(){
+        findViewById(R.id.favourite_icon_viewer_activity).setVisibility(View.GONE);
     }
 
     private AlertDialog getDateCreatedDialog() {
@@ -119,5 +136,4 @@ public class NoteViewerActivity extends NoteActivity {
     private int getCurrentNoteID(){
         return getIntent().getIntExtra(NotesMainActivity.NOTE_ID_EXTRA, 1);
     }
-
 }

@@ -141,8 +141,10 @@ public class NotesDatabase extends SQLiteOpenHelper {
         ),null);
 
         cursor.moveToFirst();
-        Note note = getNoteFromCursor(cursor);
+        Note note = this.getNoteFromCursor(cursor);
         cursor.close();
+
+        note.setFavourite(this.isNoteFavourite(id));
 
         return note;
     }
@@ -257,5 +259,18 @@ public class NotesDatabase extends SQLiteOpenHelper {
         }
 
         return columnsToSelect;
+    }
+
+    private boolean isNoteFavourite(int id){
+
+        Cursor cursor = accessDatabase.rawQuery(String.format(
+                "SELECT %s FROM %s WHERE %s = %s;",
+                NOTES_ID, FAVOURITES_TABLE_TITLE, NOTES_ID, id
+        ),null);
+
+        cursor.moveToFirst();
+        boolean isFavourite = cursor.getCount() == 1;
+        cursor.close();
+        return isFavourite;
     }
 }
