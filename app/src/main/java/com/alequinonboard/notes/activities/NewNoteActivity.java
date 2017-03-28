@@ -134,17 +134,7 @@ public class NewNoteActivity extends NoteActivity {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        final AlertDialog.OnClickListener listener = getDialogListenerForEditModeDateChangeDialog();
-
-        builder.setMessage(getString(R.string.date_change_dialog_message));
-        builder.setPositiveButton(getString(R.string.yes), listener);
-        builder.setNegativeButton(getString(R.string.no), listener);
-
-        return builder.create();
-    }
-
-    private DialogInterface.OnClickListener getDialogListenerForEditModeDateChangeDialog(){
-        return new DialogInterface.OnClickListener() {
+        final AlertDialog.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 boolean ifUpdateDate = (i == -1);
@@ -152,6 +142,12 @@ public class NewNoteActivity extends NoteActivity {
                 finish();
             }
         };
+
+        builder.setMessage(getString(R.string.date_change_dialog_message));
+        builder.setPositiveButton(getString(R.string.yes), listener);
+        builder.setNegativeButton(getString(R.string.no), listener);
+
+        return builder.create();
     }
 
     private void prepareActivityAsEditMode(){
