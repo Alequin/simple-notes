@@ -19,19 +19,29 @@ public class BooleanMenuItem {
     private Drawable falseIcon;
 
 
+    public BooleanMenuItem() {
+        this(null);
+    }
+
     public BooleanMenuItem(MenuItem item) {
         this.item = item;
         state = false;
     }
 
+    public void setMenuItem(MenuItem item){
+        this.item = item;
+    }
+
     public void setStateTrue(){
         this.state = true;
 
-        if(trueIcon != null){
-            item.setIcon(trueIcon);
-        }
-        if(trueTitle != null){
-            item.setTitle(trueTitle);
+        if(item != null){
+            if(trueIcon != null){
+                item.setIcon(trueIcon);
+            }
+            if(trueTitle != null){
+                item.setTitle(trueTitle);
+            }
         }
     }
 

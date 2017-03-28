@@ -27,7 +27,7 @@ public class NewNoteActivity extends NoteActivity {
     private AlertDialog warnUserOfBlankBodyDialog;
     private AlertDialog editModeDateChangeDialog;
 
-    private BooleanMenuItem favouriteMenuIcon;
+    private BooleanMenuItem favouriteMenuIcon = new BooleanMenuItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,10 @@ public class NewNoteActivity extends NoteActivity {
         editMode = getIntent().getBooleanExtra(IF_EDIT_MODE, false);
 
         if(editMode){
-            this.setUpEditMode();
+            this.prepareActivityAsEditMode();
         }
+
+        this.setUpFavouriteMenuIcon();
 
         warnUserOfBlankBodyDialog = this.buildBlankBodyDialog();
     }
@@ -50,7 +52,7 @@ public class NewNoteActivity extends NoteActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_new_notes, menu);
 
-        this.initFavouriteMenuIcon(menu.getItem(0));
+        favouriteMenuIcon.setMenuItem(menu.getItem(0));
 
         return true;
     }
@@ -65,27 +67,11 @@ public class NewNoteActivity extends NoteActivity {
         switch(id){
 
             case R.id.tick_icon_new_notes_activity:
-                // main text cannot be empty. If it is ask user for input and return
-                if(isBodyEmpty()) {
-                    warnUserOfBlankBodyDialog.show();
-                    break;
-                }
-
-                if(!editMode) {
-                    this.addNoteToDatabase();
-                    this.setResult(NotesMainActivity.UPDATE_RESULT_CODE);
-                    this.finish();
-                }else{
-                    editModeDateChangeDialog.show();
-                }
+                this.onPressTickIcon();
                 break;
 
             case R.id.favourite_icon_new_notes_activity:
-                if(favouriteMenuIcon.isStateTrue()){
-                    favouriteMenuIcon.setStateFalse();
-                }else{
-                    favouriteMenuIcon.setStateTrue();
-                }
+                this.onPressFavouriteIcon();
                 break;
         }
 
@@ -98,8 +84,31 @@ public class NewNoteActivity extends NoteActivity {
         SoftInputVisibilityController.hideAndResetSoftInput(this);
     }
 
-    private void initFavouriteMenuIcon(MenuItem item){
-        favouriteMenuIcon = new BooleanMenuItem(item);
+    private void onPressTickIcon(){
+        // main text cannot be empty. If it is ask user for input and return
+        if(isBodyEmpty()) {
+            warnUserOfBlankBodyDialog.show();
+            return;
+        }
+
+        if(!editMode) {
+            this.addNoteToDatabase();
+            this.setResult(NotesMainActivity.UPDATE_RESULT_CODE);
+            this.finish();
+        }else{
+            editModeDateChangeDialog.show();
+        }
+    }
+
+    private void onPressFavouriteIcon(){
+        if(favouriteMenuIcon.isStateTrue()){
+            favouriteMenuIcon.setStateFalse();
+        }else{
+            favouriteMenuIcon.setStateTrue();
+        }
+    }
+
+    private void setUpFavouriteMenuIcon(){
         favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
         favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
 
@@ -110,6 +119,8 @@ public class NewNoteActivity extends NoteActivity {
             }else{
                 favouriteMenuIcon.setStateFalse();
             }
+        }else{
+            favouriteMenuIcon.setStateFalse();
         }
     }
 
@@ -143,7 +154,7 @@ public class NewNoteActivity extends NoteActivity {
         };
     }
 
-    private void setUpEditMode(){
+    private void prepareActivityAsEditMode(){
         editModeDateChangeDialog = buildEditModeDateChangeDialog();
         final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
         this.setTitleViewString(noteToEdit.getTitle());
