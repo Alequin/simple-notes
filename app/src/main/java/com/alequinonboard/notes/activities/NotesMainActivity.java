@@ -99,11 +99,7 @@ public class NotesMainActivity extends NoteActivity {
     }
 
     private void onPressFilterFavouritesButton(){
-        if(filterByFavouritesButton.isStateTrue()){
-            filterByFavouritesButton.setStateFalse();
-        }else{
-            filterByFavouritesButton.setStateTrue();
-        }
+        filterByFavouritesButton.setState(!filterByFavouritesButton.isStateTrue());
         this.updateListViewWithSearchTerm(this.getSearchBarText());
     }
 
@@ -119,7 +115,6 @@ public class NotesMainActivity extends NoteActivity {
 
         filterByFavouritesButton.setTitleToUseWhenTrue(getString(R.string.show_all_icon_title));
         filterByFavouritesButton.setTitleToUseWhenFalse(getString(R.string.filter_favourites_icon_title));
-        filterByFavouritesButton.setStateFalse();
     }
 
     private void initialiseListCursorAndListAdapter(){

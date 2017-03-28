@@ -101,11 +101,7 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private void onPressFavouriteButton(){
-        if(favouriteMenuIcon.isStateTrue()){
-            favouriteMenuIcon.setStateFalse();
-        }else{
-            favouriteMenuIcon.setStateTrue();
-        }
+        favouriteMenuIcon.setState(!favouriteMenuIcon.isStateTrue());
     }
 
     private void setUpFavouriteMenuIcon(){
@@ -114,13 +110,9 @@ public class NewNoteActivity extends NoteActivity {
 
         if(editMode){
             final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
-            if(noteToEdit.isFavourite()){
-                favouriteMenuIcon.setStateTrue();
-            }else{
-                favouriteMenuIcon.setStateFalse();
-            }
+            favouriteMenuIcon.setState(noteToEdit.isFavourite());
         }else{
-            favouriteMenuIcon.setStateFalse();
+            favouriteMenuIcon.setState(false);
         }
     }
 

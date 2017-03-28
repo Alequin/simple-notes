@@ -43,7 +43,7 @@ public class BooleanMenuItem {
         }
     }
 
-    public void setStateTrue(){
+    private void setStateTrue(){
         if(trueIcon != null){
             item.setIcon(trueIcon);
         }
@@ -52,14 +52,13 @@ public class BooleanMenuItem {
         }
     }
 
-    public void setStateFalse(){
-        if (trueIcon != null) {
+    private void setStateFalse(){
+        if (falseIcon != null) {
             item.setIcon(falseIcon);
         }
-        if (trueTitle != null) {
+        if (falseTitle != null) {
             item.setTitle(falseTitle);
         }
-
     }
 
     public boolean isStateTrue(){
