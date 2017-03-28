@@ -100,7 +100,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotesTableQueryByTitle(String searchTerm, String...columns){
 
-        String columnsToSelect = this.joinColumnNames(columns);
+        String columnsToSelect = this.joinColumnNames(NOTES_TABLE_TITLE, columns);
 
         Cursor cursor;
         final String baseQuery = String.format(
@@ -134,29 +134,28 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     public Cursor getNotesJoinedFavouritesTableQueryByTitle(String searchTerm, String...columns){
 
-        columns = this.prefixColumnNamesWithTableTitle(NOTES_TABLE_TITLE, columns);
-        String columnsToSelect = this.joinColumnNames(columns);
+        String columnsToSelect = this.joinColumnNames(NOTES_TABLE_TITLE, columns);
 
         Cursor cursor;
         final String baseQuery = String.format(
                 "SELECT %s " +
-                "FROM %s INNER JOIN %s AS favourites " +
-                "ON %s.%s = favourites.%s"
-                , columnsToSelect, NOTES_TABLE_TITLE, FAVOURITES_TABLE_TITLE, NOTES_TABLE_TITLE, ID, NOTES_ID);
+                "FROM %s AS notes INNER JOIN %s AS favourites " +
+                "ON notes.%s = favourites.%s"
+                , columnsToSelect, NOTES_TABLE_TITLE, FAVOURITES_TABLE_TITLE, ID, NOTES_ID);
 
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
             final String querySearchTermAtStart = String.format(
-                    "%s WHERE %s = '%s' OR %s LIKE '%s'",
+                    "%s WHERE notes.%s = '%s' OR notes.%s LIKE '%s'",
                     baseQuery, TITLE, searchTerm, TITLE, searchTerm + "%"
             );
             final String querySearchTermInMiddle = String.format(
-                    "%s WHERE %s LIKE '%s'",
+                    "%s WHERE notes.%s LIKE '%s'",
                     baseQuery, TITLE, "%_"+searchTerm+"_%"
             );
             final String querySearchTermAtEnd = String.format(
-                    "%s WHERE %s LIKE '%s'",
+                    "%s WHERE notes.%s LIKE '%s'",
                     baseQuery, TITLE, "%_"+searchTerm
             );
 
@@ -296,15 +295,15 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return columns;
     }
 
-    private String joinColumnNames(String[] columns){
+    private String joinColumnNames(String tableName, String[] columns){
         String columnsToSelect = "";
         int length = columns.length;
         for(int j=0; j<length; j++){
             //if the loop is on the final iteration don't add a comma on the end
             if(j != length-1){
-                columnsToSelect += columns[j] + ", ";
+                columnsToSelect += tableName +"."+columns[j] + ", ";
             }else{
-                columnsToSelect += columns[j];
+                columnsToSelect += tableName +"."+columns[j];
             }
         }
 
