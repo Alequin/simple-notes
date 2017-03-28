@@ -32,28 +32,34 @@ public class BooleanMenuItem {
         this.item = item;
     }
 
-    public void setStateTrue(){
-        this.state = true;
-
+    public void setState(boolean newState){
+        this.state = newState;
         if(item != null){
-            if(trueIcon != null){
-                item.setIcon(trueIcon);
-            }
-            if(trueTitle != null){
-                item.setTitle(trueTitle);
+            if(newState){
+                this.setStateTrue();
+            }else{
+                this.setStateFalse();
             }
         }
     }
 
-    public void setStateFalse(){
-        this.state = false;
-
+    public void setStateTrue(){
         if(trueIcon != null){
-            item.setIcon(falseIcon);
+            item.setIcon(trueIcon);
         }
         if(trueTitle != null){
+            item.setTitle(trueTitle);
+        }
+    }
+
+    public void setStateFalse(){
+        if (trueIcon != null) {
+            item.setIcon(falseIcon);
+        }
+        if (trueTitle != null) {
             item.setTitle(falseTitle);
         }
+
     }
 
     public boolean isStateTrue(){
