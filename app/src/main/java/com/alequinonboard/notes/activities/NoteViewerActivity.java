@@ -31,7 +31,7 @@ public class NoteViewerActivity extends NoteActivity {
         noteToShow = database.getNoteById(getCurrentNoteID());
 
         setTitleAndBodyViewText();
-        dateCreatedDialog = getDateCreatedDialog();
+        dateCreatedDialog = buildDateCreatedDialog();
 
         if(noteToShow.isFavourite()){
             showFavouriteIcon();
@@ -61,9 +61,7 @@ public class NoteViewerActivity extends NoteActivity {
                 break;
 
             case R.id.delete_icon_viewer_activity:
-                deletedCurrentNote();
-                setResult(NotesMainActivity.UPDATE_RESULT_CODE);
-                finish();
+                this.onPressDeleteButton();
                 break;
 
             case R.id.date_created_viewer_activity:
@@ -72,6 +70,12 @@ public class NoteViewerActivity extends NoteActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onPressDeleteButton(){
+        deletedCurrentNote();
+        setResult(NotesMainActivity.UPDATE_RESULT_CODE);
+        finish();
     }
 
     @Override
@@ -90,7 +94,7 @@ public class NoteViewerActivity extends NoteActivity {
         findViewById(R.id.favourite_icon_viewer_activity).setVisibility(View.GONE);
     }
 
-    private AlertDialog getDateCreatedDialog() {
+    private AlertDialog buildDateCreatedDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -121,7 +125,7 @@ public class NoteViewerActivity extends NoteActivity {
         }else{
             hideFavouriteIcon();
         }
-        //result is set as if update is called the note must have changed. The list view must also
+        //result is set as if update is called the note should have changed. The list view must also
         //updated on return
         setResult(NotesMainActivity.UPDATE_RESULT_CODE);
     }
