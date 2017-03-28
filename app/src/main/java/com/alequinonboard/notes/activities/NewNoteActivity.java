@@ -27,7 +27,7 @@ public class NewNoteActivity extends NoteActivity {
     private AlertDialog warnUserOfBlankBodyDialog;
     private AlertDialog editModeDateChangeDialog;
 
-    private BooleanMenuItem favouriteMenuIcon = new BooleanMenuItem();
+    private final BooleanMenuItem favouriteMenuIcon = new BooleanMenuItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +67,11 @@ public class NewNoteActivity extends NoteActivity {
         switch(id){
 
             case R.id.tick_icon_new_notes_activity:
-                this.onPressTickIcon();
+                this.onPressTickButton();
                 break;
 
             case R.id.favourite_icon_new_notes_activity:
-                this.onPressFavouriteIcon();
+                this.onPressFavouriteButton();
                 break;
         }
 
@@ -84,7 +84,7 @@ public class NewNoteActivity extends NoteActivity {
         SoftInputVisibilityController.hideAndResetSoftInput(this);
     }
 
-    private void onPressTickIcon(){
+    private void onPressTickButton(){
         // main text cannot be empty. If it is ask user for input and return
         if(isBodyEmpty()) {
             warnUserOfBlankBodyDialog.show();
@@ -100,7 +100,7 @@ public class NewNoteActivity extends NoteActivity {
         }
     }
 
-    private void onPressFavouriteIcon(){
+    private void onPressFavouriteButton(){
         if(favouriteMenuIcon.isStateTrue()){
             favouriteMenuIcon.setStateFalse();
         }else{

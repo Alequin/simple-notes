@@ -29,7 +29,7 @@ public class NotesMainActivity extends NoteActivity {
     private SimpleCursorAdapter listAdapter;
     private Cursor listCursor;
 
-    private BooleanMenuItem filterByFavouritesButton;
+    private final BooleanMenuItem filterByFavouritesButton = new BooleanMenuItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,8 @@ public class NotesMainActivity extends NoteActivity {
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(getListListener());
 
+        this.setUpFilterByFavouritesButton();
+
         EditText searchBox = (EditText)findViewById(R.id.search_bar_main_activity);
         searchBox.setOnKeyListener(getSearchBarKeyListener());
     }
@@ -52,10 +54,7 @@ public class NotesMainActivity extends NoteActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_notes_main, menu);
 
-        filterByFavouritesButton = new BooleanMenuItem(menu.getItem(2));
-        filterByFavouritesButton.setTitleToUseWhenTrue(getString(R.string.show_all_icon_title));
-        filterByFavouritesButton.setTitleToUseWhenFalse(getString(R.string.filter_favourites_icon_title));
-        filterByFavouritesButton.setStateFalse();
+        filterByFavouritesButton.setMenuItem(menu.getItem(2));
         return true;
     }
 
@@ -73,22 +72,11 @@ public class NotesMainActivity extends NoteActivity {
                 break;
 
             case R.id.search_icon_main_activity:
-                if(this.isSearchBarVisible()){
-                    this.hideSearchBarAndUpdateList();
-                    SoftInputVisibilityController.hideAndResetSoftInput(this);
-                }else{
-                    this.showSearchBarAndUpdateList();
-                    SoftInputVisibilityController.showSoftInput(this);
-                }
+                this.onPressSearchButton();
                 break;
 
             case R.id.filer_favourites_main_activity:
-                if(filterByFavouritesButton.isStateTrue()){
-                    filterByFavouritesButton.setStateFalse();
-                }else{
-                    filterByFavouritesButton.setStateTrue();
-                }
-                this.updateListViewWithSearchTerm(this.getSearchBarText());
+                this.onPressFilterFavouritesButton();
                 break;
 
             case R.id.action_settings:
@@ -99,12 +87,39 @@ public class NotesMainActivity extends NoteActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void onPressSearchButton(){
+        if(this.isSearchBarVisible()){
+            this.hideSearchBar();
+            SoftInputVisibilityController.hideAndResetSoftInput(this);
+        }else{
+            this.showSearchBarAndRequestFocus();
+            SoftInputVisibilityController.showSoftInput(this);
+        }
+        this.updateListViewWithSearchTerm(this.getSearchBarText());
+    }
+
+    private void onPressFilterFavouritesButton(){
+        if(filterByFavouritesButton.isStateTrue()){
+            filterByFavouritesButton.setStateFalse();
+        }else{
+            filterByFavouritesButton.setStateTrue();
+        }
+        this.updateListViewWithSearchTerm(this.getSearchBarText());
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         if(isSearchBarVisible()){
             this.hideSearchBarAndUpdateList();
         }
+    }
+
+    private void setUpFilterByFavouritesButton(){
+
+        filterByFavouritesButton.setTitleToUseWhenTrue(getString(R.string.show_all_icon_title));
+        filterByFavouritesButton.setTitleToUseWhenFalse(getString(R.string.filter_favourites_icon_title));
+        filterByFavouritesButton.setStateFalse();
     }
 
     private void initialiseListCursorAndListAdapter(){
@@ -137,11 +152,6 @@ public class NotesMainActivity extends NoteActivity {
         View searchBar = findViewById(R.id.search_bar_layout_main_activity);
         searchBar.setVisibility(View.VISIBLE);
         searchBar.requestFocus();
-    }
-
-    private void showSearchBarAndUpdateList(){
-        this.showSearchBarAndRequestFocus();
-        this.updateListViewWithSearchTerm(getSearchBarText());
     }
 
     private void hideSearchBar(){
@@ -186,7 +196,7 @@ public class NotesMainActivity extends NoteActivity {
 
     private Cursor getListCursorWithSearchTerm(String searchTerm){
         Cursor cursor;
-        if(filterByFavouritesButton == null || !filterByFavouritesButton.isStateTrue()){
+        if(!filterByFavouritesButton.isStateTrue()){
             cursor = database.getNotesTableQueryByTitle(searchTerm);
         }else{
             cursor = database.getNotesJoinedFavouritesTableQueryByTitle(searchTerm);
