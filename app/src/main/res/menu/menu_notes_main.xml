@@ -4,21 +4,29 @@
     tools:context="com.alequinonboard.simplenotes.NotesMainActivity">
 
     <item
-        android:id="@id/add_icon_action_bar"
+        android:id="@id/add_icon_main_activity"
         android:icon="@drawable/add_icon"
         android:title="@string/add_icon_title"
         app:showAsAction="always"/>
 
         /><item
-        android:id="@id/search_icon_action_bar"
+        android:id="@id/search_icon_main_activity"
         android:icon="@drawable/search_icon"
         android:title="@string/search_icon_title"
         app:showAsAction="always"
         />
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@id/filer_favourites_main_activity"
+        android:orderInCategory="100"
+        android:title="@string/filter_favourites_icon_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@id/action_settings_main_activity"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+
 </menu>

@@ -53,11 +53,14 @@ public class NewNoteActivity extends NoteActivity {
         favouriteMenuIcon = new BooleanMenuItem(menu.getItem(0));
         favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
         favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
-        final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
-        if(noteToEdit.isFavourite()){
-            favouriteMenuIcon.setStateTrue();
-        }else{
-            favouriteMenuIcon.setStateFalse();
+
+        if(editMode){
+            final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+            if(noteToEdit.isFavourite()){
+                favouriteMenuIcon.setStateTrue();
+            }else{
+                favouriteMenuIcon.setStateFalse();
+            }
         }
 
         return true;

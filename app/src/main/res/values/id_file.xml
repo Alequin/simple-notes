@@ -2,12 +2,12 @@
 <resources>
 
     <item
-        name="add_icon_action_bar"
+        name="add_icon_main_activity"
         type="id"
         />
 
     <item
-        name="search_icon_action_bar"
+        name="search_icon_main_activity"
         type="id"
         />
 
@@ -83,6 +83,16 @@
 
     <item
         name="title_layout_viewer_activity"
+        type="id"
+        />
+
+    <item
+        name="action_settings_main_activity"
+        type="id"
+        />
+
+    <item
+        name="filer_favourites_main_activity"
         type="id"
         />
 

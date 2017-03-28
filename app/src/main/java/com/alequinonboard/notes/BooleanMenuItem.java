@@ -12,8 +12,12 @@ public class BooleanMenuItem {
     private MenuItem item;
     private boolean state;
 
-    private Drawable falseIcon;
+    private String trueTitle;
+    private String falseTitle;
+
     private Drawable trueIcon;
+    private Drawable falseIcon;
+
 
     public BooleanMenuItem(MenuItem item) {
         this.item = item;
@@ -21,19 +25,25 @@ public class BooleanMenuItem {
     }
 
     public void setStateTrue(){
-        if(trueIcon == null){
-            throw new NullPointerException("No drawable has been given to set when state is true");
-        }
         this.state = true;
-        item.setIcon(trueIcon);
+
+        if(trueIcon != null){
+            item.setIcon(trueIcon);
+        }
+        if(trueTitle != null){
+            item.setTitle(trueTitle);
+        }
     }
 
     public void setStateFalse(){
-        if(trueIcon == null){
-            throw new NullPointerException("No drawable has been given to set when state is false");
-        }
         this.state = false;
-        item.setIcon(falseIcon);
+
+        if(trueIcon != null){
+            item.setIcon(falseIcon);
+        }
+        if(trueTitle != null){
+            item.setTitle(falseTitle);
+        }
     }
 
     public boolean isStateTrue(){
@@ -48,5 +58,12 @@ public class BooleanMenuItem {
         this.falseIcon = icon;
     }
 
+    public void setTitleToUseWhenTrue(String title){
+        this.trueTitle = title;
+    }
+
+    public void setTitleToUseWhenFalse(String title){
+        this.falseTitle = title;
+    }
 
 }

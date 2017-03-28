@@ -9,6 +9,8 @@
     <string name="tick_icon_title">Save</string>
     <string name="favourite_icon_title">Favourite</string>
     <string name="creation_date_icon_title">Creation Date</string>
+    <string name="filter_favourites_icon_title">Filter By Favourites</string>
+    <string name="show_all_icon_title">Show All</string>
 
     <string name="title_activity_new_note">NewNoteActivity</string>
 

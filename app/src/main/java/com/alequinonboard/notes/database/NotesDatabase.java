@@ -28,13 +28,13 @@ public class NotesDatabase extends SQLiteOpenHelper {
     public static final String MAIN_TEXT = "main_text";
     public static final String DATE = "date";
 
-    public static final String FAVOURITES_TABLE_TITLE = "favourites";
-    public static final String NOTES_ID = "notes_id";
+    private static final String FAVOURITES_TABLE_TITLE = "favourites";
+    private static final String NOTES_ID = "notes_id";
 
-    public static final String NOTE_COUNTER_TABLE_TITLE = "note_counter";
-    public static final String NUMBER_OF_NOTES = "note_counter";
+    private static final String NOTE_COUNTER_TABLE_TITLE = "note_counter";
+    private static final String NUMBER_OF_NOTES = "note_counter";
 
-    public NotesDatabase(Context context) {
+    private NotesDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -98,17 +98,51 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase = null;
     }
 
-    public Cursor getNotesTableCursor(String[] columns){
-        return getNotesTableCursorQueryByTitle(null, columns);
-    }
-
-    public Cursor getNotesTableCursorQueryByTitle(String searchTerm, String[] columns){
+    public Cursor getNotesTableQueryByTitle(String searchTerm, String...columns){
 
         String columnsToSelect = this.joinColumnNames(columns);
 
         Cursor cursor;
         final String baseQuery = String.format(
                 "SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
+
+        if(searchTerm == null || searchTerm.isEmpty()){
+            cursor = accessDatabase.rawQuery(baseQuery+";",null);
+        }else{
+            final String querySearchTermAtStart = String.format(
+                    "%s WHERE %s = '%s' OR %s LIKE '%s'",
+                    baseQuery, TITLE, searchTerm, TITLE, searchTerm + "%"
+            );
+            final String querySearchTermInMiddle = String.format(
+                    "%s WHERE %s LIKE '%s'",
+                    baseQuery, TITLE, "%_"+searchTerm+"_%"
+            );
+            final String querySearchTermAtEnd = String.format(
+                    "%s WHERE %s LIKE '%s'",
+                    baseQuery, TITLE, "%_"+searchTerm
+            );
+
+            cursor = accessDatabase.rawQuery(String.format(
+                    "%s UNION ALL %s UNION ALL %s;",
+                    querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
+            ),null);
+        }
+        cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    public Cursor getNotesJoinedFavouritesTableQueryByTitle(String searchTerm, String...columns){
+
+        columns = this.prefixColumnNamesWithTableTitle(NOTES_TABLE_TITLE, columns);
+        String columnsToSelect = this.joinColumnNames(columns);
+
+        Cursor cursor;
+        final String baseQuery = String.format(
+                "SELECT %s " +
+                "FROM %s INNER JOIN %s AS favourites " +
+                "ON %s.%s = favourites.%s"
+                , columnsToSelect, NOTES_TABLE_TITLE, FAVOURITES_TABLE_TITLE, NOTES_TABLE_TITLE, ID, NOTES_ID);
 
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
@@ -254,15 +288,23 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return note;
     }
 
+    private String[] prefixColumnNamesWithTableTitle(String tableTitle, String[] columns){
+
+        for(int j=0; j<columns.length; j++){
+            columns[j] = tableTitle + "." + columns[j];
+        }
+        return columns;
+    }
+
     private String joinColumnNames(String[] columns){
         String columnsToSelect = "";
         int length = columns.length;
-        for(int a=0; a<length; a++){
+        for(int j=0; j<length; j++){
             //if the loop is on the final iteration don't add a comma on the end
-            if(a != length-1){
-                columnsToSelect += columns[a] + ", ";
+            if(j != length-1){
+                columnsToSelect += columns[j] + ", ";
             }else{
-                columnsToSelect += columns[a];
+                columnsToSelect += columns[j];
             }
         }
 

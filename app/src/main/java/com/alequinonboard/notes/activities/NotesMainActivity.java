@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.alequinonboard.notes.BooleanMenuItem;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.SoftInputVisibilityController;
 import com.alequinonboard.notes.database.NotesDatabase;
@@ -27,6 +28,10 @@ public class NotesMainActivity extends NoteActivity {
 
     private SimpleCursorAdapter listAdapter;
     private Cursor listCursor;
+
+    private BooleanMenuItem filterByFavouritesButton;
+
+    private final String[] tableColumnsToQuery = {NotesDatabase.ID, NotesDatabase.TITLE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,11 @@ public class NotesMainActivity extends NoteActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_notes_main, menu);
+
+        filterByFavouritesButton = new BooleanMenuItem(menu.getItem(2));
+        filterByFavouritesButton.setTitleToUseWhenTrue(getString(R.string.show_all_icon_title));
+        filterByFavouritesButton.setTitleToUseWhenFalse(getString(R.string.filter_favourites_icon_title));
+        filterByFavouritesButton.setStateFalse();
         return true;
     }
 
@@ -60,11 +70,11 @@ public class NotesMainActivity extends NoteActivity {
 
         switch(id){
 
-            case R.id.add_icon_action_bar:
+            case R.id.add_icon_main_activity:
                 startActivityForResult(new Intent(this, NewNoteActivity.class), UPDATE_REQUEST_CODE);
                 break;
 
-            case R.id.search_icon_action_bar:
+            case R.id.search_icon_main_activity:
                 if(this.isSearchBarVisible()){
                     this.hideSearchBarAndUpdateList();
                     SoftInputVisibilityController.hideAndResetSoftInput(this);
@@ -74,7 +84,17 @@ public class NotesMainActivity extends NoteActivity {
                 }
                 break;
 
+            case R.id.filer_favourites_main_activity:
+                if(filterByFavouritesButton.isStateTrue()){
+                    filterByFavouritesButton.setStateFalse();
+                }else{
+                    filterByFavouritesButton.setStateTrue();
+                }
+                this.updateListViewWithSearchTerm(this.getSearchBarText());
+                break;
+
             case R.id.action_settings:
+
                 break;
         }
 
@@ -163,11 +183,18 @@ public class NotesMainActivity extends NoteActivity {
     }
 
     private Cursor getListCursor(){
-        return database.getNotesTableCursorQueryByTitle(null, new String[]{NotesDatabase.ID, NotesDatabase.TITLE});
+        return this.getListCursorWithSearchTerm(null);
     }
 
     private Cursor getListCursorWithSearchTerm(String searchTerm){
-        return database.getNotesTableCursorQueryByTitle(searchTerm, new String[]{NotesDatabase.ID, NotesDatabase.TITLE});
+        Cursor cursor;
+        if(filterByFavouritesButton == null || !filterByFavouritesButton.isStateTrue()){
+            cursor = database.getNotesTableQueryByTitle(searchTerm, tableColumnsToQuery);
+        }else{
+            cursor = database.getNotesJoinedFavouritesTableQueryByTitle(searchTerm, tableColumnsToQuery);
+        }
+
+        return cursor;
     }
 
     private AdapterView.OnItemClickListener getListListener(){
