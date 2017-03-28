@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/raised_white_tile_reduced_height"/>
+            android:background="#fff"/>
 
         <EditText
             android:id="@id/search_bar_main_activity"

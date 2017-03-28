@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/raised_white_tile_reduced_height"/>
+            android:background="#fff"/>
 
         <ImageView
             android:id="@id/favourite_icon_viewer_activity"
@@ -55,8 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:maxLines="1"
-                style="@style/title_text_style"
-                android:text="wqqq"/>
+                style="@style/title_text_style"/>
 
         </HorizontalScrollView>
 
@@ -78,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/raised_white_tile"/>
+            android:background="#fff"/>
 
         <ScrollView
             android:layout_width="match_parent"

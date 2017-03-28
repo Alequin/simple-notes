@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/raised_white_tile_reduced_height"/>
+            android:background="#ffffff"/>
 
         <EditText
             android:id="@id/title_new_notes_activity"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/raised_white_tile"/>
+            android:background="#ffffff"/>
 
             <EditText
                 android:id="@id/main_text_new_notes_activity"
