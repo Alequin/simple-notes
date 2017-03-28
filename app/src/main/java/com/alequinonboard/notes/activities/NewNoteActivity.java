@@ -53,6 +53,12 @@ public class NewNoteActivity extends NoteActivity {
         favouriteMenuIcon = new BooleanMenuItem(menu.getItem(0));
         favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
         favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
+        final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+        if(noteToEdit.isFavourite()){
+            favouriteMenuIcon.setStateTrue();
+        }else{
+            favouriteMenuIcon.setStateFalse();
+        }
 
         return true;
     }
@@ -132,10 +138,11 @@ public class NewNoteActivity extends NoteActivity {
 
     private void setUpEditMode(){
         editModeDateChangeDialog = buildEditModeDateChangeDialog();
-        Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+        final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
         this.setTitleViewString(noteToEdit.getTitle());
         this.setBodyViewString(noteToEdit.getBody());
         noteToEditCreationDate = noteToEdit.getDate();
+
     }
 
     private String getTitleStringFromView(){
@@ -192,12 +199,19 @@ public class NewNoteActivity extends NoteActivity {
         Note newNote = initialiseNewNote(new Date());
         database.insertToNotesTable(newNote);
         if(newNote.isFavourite()){
-            database.insertLastAddedNoteToFavouritesTable(newNote);
+            database.insertLastAddedNoteToFavouritesTable();
         }
     }
 
     private void updateNoteInDatabase(boolean ifAlterDate){
-        database.updateNoteInDatabase(getIdOfNoteToEdit(), getNoteWithEditedValues(ifAlterDate));
+        final int noteId = getIdOfNoteToEdit();
+        final Note editedNote = this.getNoteWithEditedValues(ifAlterDate);
+        database.updateNoteInDatabase(noteId, editedNote);
+        if(favouriteMenuIcon.isStateTrue()){
+            database.insertIdToFavouritesTable(noteId);
+        }else{
+            database.removeNoteFromFavouritesById(noteId);
+        }
         setResult(NoteViewerActivity.UPDATE_RESULT_CODE);
     }
 

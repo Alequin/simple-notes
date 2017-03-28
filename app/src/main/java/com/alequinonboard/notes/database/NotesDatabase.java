@@ -51,8 +51,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
         database.execSQL(String.format(
                 "CREATE TABLE %s(" +
                 "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "%s INTEGER);",
-                FAVOURITES_TABLE_TITLE, ID, NOTES_ID
+                "%s INTEGER, " +
+                "CONSTRAINT unique_constraint UNIQUE (%s), " +
+                "FOREIGN KEY (%s) " +
+                "REFERENCES %s (%s));",
+                FAVOURITES_TABLE_TITLE, ID, NOTES_ID, NOTES_ID, NOTES_ID, NOTES_TABLE_TITLE, ID
         ));
 
         database.execSQL(String.format(
@@ -144,7 +147,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         Note note = this.getNoteFromCursor(cursor);
         cursor.close();
 
-        note.setFavourite(this.isNoteFavourite(id));
+        note.setFavourite(this.isNoteIdInFavouritesTable(id));
 
         return note;
     }
@@ -159,23 +162,29 @@ public class NotesDatabase extends SQLiteOpenHelper {
         this.incrementTotalNotesCreated();
     }
 
-    public void insertLastAddedNoteToFavouritesTable(Note favouriteNote){
+    public void insertIdToFavouritesTable(int noteId){
 
-        final String getIdQuery = String.format(
-                "SELECT %s FROM %s WHERE %s = '%s' AND %s = '%s' AND %s = '%s' ORDER BY %s DESC LIMIT 1",
+        accessDatabase.execSQL(String.format(
+                "INSERT INTO %s (%s) VALUES (%s);",
+                FAVOURITES_TABLE_TITLE,
+                NOTES_ID,
+                noteId
+        ));
+    }
+
+    public void insertLastAddedNoteToFavouritesTable(){
+
+        final String queryForId = String.format(
+                "SELECT %s FROM %s ORDER BY %s DESC LIMIT 1",
                 ID, NOTES_TABLE_TITLE,
-                TITLE, favouriteNote.getTitle(),
-                MAIN_TEXT, favouriteNote.getBody(),
-                DATE, favouriteNote.getDate(),
                 ID
         );
 
-        accessDatabase.execSQL(String.format(
-                "INSERT INTO %s (%s) VALUES ((%s));",
-                FAVOURITES_TABLE_TITLE,
-                NOTES_ID,
-                getIdQuery
-        ));
+        final Cursor cursor = accessDatabase.rawQuery(queryForId, null);
+        cursor.moveToFirst();
+
+        final int noteId = cursor.getInt(0);
+        this.insertIdToFavouritesTable(noteId);
     }
 
     public void updateNoteInDatabase(int id, Note editedNote){
@@ -187,20 +196,19 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 DATE, editedNote.getDate(),
                 ID, id
         ));
-
     }
 
-    public void deleteNoteById(int id){
-
-        //delete note by id
-        //query favourites table for id, if found delete
+    public void deleteNoteById(int noteId){
 
         accessDatabase.execSQL(String.format(
-                "DELETE FROM %s WHERE %s = %s", NOTES_TABLE_TITLE, ID, id
+                "DELETE FROM %s WHERE %s = %s", NOTES_TABLE_TITLE, ID, noteId
         ));
+    }
+
+    public void removeNoteFromFavouritesById(int noteId){
 
         accessDatabase.execSQL(String.format(
-                "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, id
+                "DELETE FROM %s WHERE %s = %s", FAVOURITES_TABLE_TITLE, NOTES_ID, noteId
         ));
 
     }
@@ -261,7 +269,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return columnsToSelect;
     }
 
-    private boolean isNoteFavourite(int id){
+    private boolean isNoteIdInFavouritesTable(int id){
 
         Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s FROM %s WHERE %s = %s;",

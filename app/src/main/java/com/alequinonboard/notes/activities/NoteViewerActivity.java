@@ -7,8 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alequinonboard.notes.Note;
@@ -63,7 +61,7 @@ public class NoteViewerActivity extends NoteActivity {
                 break;
 
             case R.id.delete_icon_viewer_activity:
-                database.deleteNoteById(getCurrentNoteID());
+                deletedCurrentNote();
                 setResult(NotesMainActivity.UPDATE_RESULT_CODE);
                 finish();
                 break;
@@ -80,10 +78,10 @@ public class NoteViewerActivity extends NoteActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if(requestCode == UPDATE_REQUEST_CODE && resultCode == UPDATE_RESULT_CODE){
-            updateNoteTitleAndBodyViews();
+            updateNoteDisplay();
         }
     }
-    
+
     private void showFavouriteIcon(){
         findViewById(R.id.favourite_icon_viewer_activity).setVisibility(View.VISIBLE);
     }
@@ -115,11 +113,16 @@ public class NoteViewerActivity extends NoteActivity {
         ((TextView) findViewById(R.id.main_text_viewer_activity)).setText(note.getBody());;
     }
 
-    private void updateNoteTitleAndBodyViews() {
+    private void updateNoteDisplay() {
         noteToShow = database.getNoteById(getCurrentNoteID());
         setTitleAndBodyViewText();
+        if(noteToShow.isFavourite()){
+            showFavouriteIcon();
+        }else{
+            hideFavouriteIcon();
+        }
         //result is set as if update is called the note must have changed. The list view must also
-        //change on return
+        //updated on return
         setResult(NotesMainActivity.UPDATE_RESULT_CODE);
     }
 
@@ -131,6 +134,12 @@ public class NoteViewerActivity extends NoteActivity {
 
         startActivityForResult(startNewNoteActivity, UPDATE_REQUEST_CODE);
 
+    }
+
+    private void deletedCurrentNote(){
+        final int currentNoteId = getCurrentNoteID();
+        database.deleteNoteById(currentNoteId);
+        database.removeNoteFromFavouritesById(currentNoteId);
     }
 
     private int getCurrentNoteID(){
