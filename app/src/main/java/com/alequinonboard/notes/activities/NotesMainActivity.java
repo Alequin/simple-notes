@@ -31,8 +31,6 @@ public class NotesMainActivity extends NoteActivity {
 
     private BooleanMenuItem filterByFavouritesButton;
 
-    private final String[] tableColumnsToQuery = {NotesDatabase.ID, NotesDatabase.TITLE};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,9 +187,9 @@ public class NotesMainActivity extends NoteActivity {
     private Cursor getListCursorWithSearchTerm(String searchTerm){
         Cursor cursor;
         if(filterByFavouritesButton == null || !filterByFavouritesButton.isStateTrue()){
-            cursor = database.getNotesTableQueryByTitle(searchTerm, tableColumnsToQuery);
+            cursor = database.getNotesTableQueryByTitle(searchTerm);
         }else{
-            cursor = database.getNotesJoinedFavouritesTableQueryByTitle(searchTerm, tableColumnsToQuery);
+            cursor = database.getNotesJoinedFavouritesTableQueryByTitle(searchTerm);
         }
 
         return cursor;

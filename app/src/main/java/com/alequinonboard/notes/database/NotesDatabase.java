@@ -98,75 +98,72 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase = null;
     }
 
-    public Cursor getNotesTableQueryByTitle(String searchTerm, String...columns){
-
-        String columnsToSelect = this.joinColumnNames(NOTES_TABLE_TITLE, columns);
+    public Cursor getNotesTableQueryByTitle(String searchTerm){
 
         Cursor cursor;
         final String baseQuery = String.format(
-                "SELECT %s FROM %s", columnsToSelect, NOTES_TABLE_TITLE);
+                "SELECT %s, %s FROM %s", ID, TITLE, NOTES_TABLE_TITLE);
 
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
-            final String querySearchTermAtStart = String.format(
-                    "%s WHERE %s = '%s' OR %s LIKE '%s'",
-                    baseQuery, TITLE, searchTerm, TITLE, searchTerm + "%"
-            );
-            final String querySearchTermInMiddle = String.format(
-                    "%s WHERE %s LIKE '%s'",
-                    baseQuery, TITLE, "%_"+searchTerm+"_%"
-            );
-            final String querySearchTermAtEnd = String.format(
-                    "%s WHERE %s LIKE '%s'",
-                    baseQuery, TITLE, "%_"+searchTerm
-            );
-
-            cursor = accessDatabase.rawQuery(String.format(
-                    "%s UNION ALL %s UNION ALL %s;",
-                    querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
-            ),null);
+            cursor = this.getCursorFromUnionQuery(baseQuery, searchTerm);
         }
         cursor.moveToFirst();
 
         return cursor;
     }
 
-    public Cursor getNotesJoinedFavouritesTableQueryByTitle(String searchTerm, String...columns){
-
-        String columnsToSelect = this.joinColumnNames(NOTES_TABLE_TITLE, columns);
+    public Cursor getNotesJoinedFavouritesTableQueryByTitle(String searchTerm){
 
         Cursor cursor;
         final String baseQuery = String.format(
-                "SELECT %s " +
-                "FROM %s AS notes INNER JOIN %s AS favourites " +
-                "ON notes.%s = favourites.%s"
-                , columnsToSelect, NOTES_TABLE_TITLE, FAVOURITES_TABLE_TITLE, ID, NOTES_ID);
+                "SELECT %s, %s " +
+                "FROM %s INNER JOIN %s " +
+                "ON %s = %s"
+                , NOTES_TABLE_TITLE+"."+ID, NOTES_TABLE_TITLE+"."+TITLE,
+                NOTES_TABLE_TITLE, FAVOURITES_TABLE_TITLE,
+                NOTES_TABLE_TITLE+"."+ID, FAVOURITES_TABLE_TITLE+"."+NOTES_ID);
 
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
-            final String querySearchTermAtStart = String.format(
-                    "%s WHERE notes.%s = '%s' OR notes.%s LIKE '%s'",
-                    baseQuery, TITLE, searchTerm, TITLE, searchTerm + "%"
-            );
-            final String querySearchTermInMiddle = String.format(
-                    "%s WHERE notes.%s LIKE '%s'",
-                    baseQuery, TITLE, "%_"+searchTerm+"_%"
-            );
-            final String querySearchTermAtEnd = String.format(
-                    "%s WHERE notes.%s LIKE '%s'",
-                    baseQuery, TITLE, "%_"+searchTerm
-            );
-
-            cursor = accessDatabase.rawQuery(String.format(
-                    "%s UNION ALL %s UNION ALL %s;",
-                    querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
-            ),null);
+            cursor = this.getCursorFromUnionQuery(baseQuery, searchTerm);
         }
         cursor.moveToFirst();
 
         return cursor;
+    }
+
+    private Cursor getCursorFromUnionQuery(String baseQuery, String searchTerm){
+        String[] searchQueries = this.getSearchQueries(baseQuery, searchTerm);
+        Cursor cursor = accessDatabase.rawQuery(String.format(
+                "%s UNION ALL %s UNION ALL %s;",
+                searchQueries[0], searchQueries[1], searchQueries[2]
+        ),null);
+
+        return cursor;
+    }
+
+    public String[] getSearchQueries(String baseQuery, String searchTerm){
+
+        final String titleColumn = NOTES_TABLE_TITLE +"."+ TITLE;
+
+        final String querySearchTermAtStart = String.format(
+                "%s WHERE %s = '%s' OR %s LIKE '%s'",
+                baseQuery, titleColumn, searchTerm, titleColumn, searchTerm + "%"
+        );
+        final String querySearchTermInMiddle = String.format(
+                "%s WHERE %s LIKE '%s'",
+                baseQuery, titleColumn, "%_"+searchTerm+"_%"
+        );
+        final String querySearchTermAtEnd = String.format(
+                "%s WHERE %s LIKE '%s'",
+                baseQuery, titleColumn, "%_"+searchTerm
+        );
+
+        return new String[]{querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd};
+
     }
 
     public Note getNoteById(int id){
@@ -285,29 +282,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
         note.setBody(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
         note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
         return note;
-    }
-
-    private String[] prefixColumnNamesWithTableTitle(String tableTitle, String[] columns){
-
-        for(int j=0; j<columns.length; j++){
-            columns[j] = tableTitle + "." + columns[j];
-        }
-        return columns;
-    }
-
-    private String joinColumnNames(String tableName, String[] columns){
-        String columnsToSelect = "";
-        int length = columns.length;
-        for(int j=0; j<length; j++){
-            //if the loop is on the final iteration don't add a comma on the end
-            if(j != length-1){
-                columnsToSelect += tableName +"."+columns[j] + ", ";
-            }else{
-                columnsToSelect += tableName +"."+columns[j];
-            }
-        }
-
-        return columnsToSelect;
     }
 
     private boolean isNoteIdInFavouritesTable(int id){
