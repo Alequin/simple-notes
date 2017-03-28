@@ -50,18 +50,7 @@ public class NewNoteActivity extends NoteActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_new_notes, menu);
 
-        favouriteMenuIcon = new BooleanMenuItem(menu.getItem(0));
-        favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
-        favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
-
-        if(editMode){
-            final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
-            if(noteToEdit.isFavourite()){
-                favouriteMenuIcon.setStateTrue();
-            }else{
-                favouriteMenuIcon.setStateFalse();
-            }
-        }
+        this.initFavouriteMenuIcon(menu.getItem(0));
 
         return true;
     }
@@ -107,6 +96,21 @@ public class NewNoteActivity extends NoteActivity {
     protected void onPause() {
         super.onPause();
         SoftInputVisibilityController.hideAndResetSoftInput(this);
+    }
+
+    private void initFavouriteMenuIcon(MenuItem item){
+        favouriteMenuIcon = new BooleanMenuItem(item);
+        favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
+        favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
+
+        if(editMode){
+            final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
+            if(noteToEdit.isFavourite()){
+                favouriteMenuIcon.setStateTrue();
+            }else{
+                favouriteMenuIcon.setStateFalse();
+            }
+        }
     }
 
     private AlertDialog buildBlankBodyDialog(){
