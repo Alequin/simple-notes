@@ -93,7 +93,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return accessDatabase.isOpen();
     }
 
-    public void end(){
+    public void closeDatabase(){
         accessDatabase.close();
         accessDatabase = null;
     }
@@ -107,7 +107,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
-            cursor = this.getCursorFromUnionQuery(baseQuery, searchTerm);
+            cursor = this.queryTablesBySearchTerm(baseQuery, searchTerm);
         }
         cursor.moveToFirst();
 
@@ -128,24 +128,14 @@ public class NotesDatabase extends SQLiteOpenHelper {
         if(searchTerm == null || searchTerm.isEmpty()){
             cursor = accessDatabase.rawQuery(baseQuery+";",null);
         }else{
-            cursor = this.getCursorFromUnionQuery(baseQuery, searchTerm);
+            cursor = this.queryTablesBySearchTerm(baseQuery, searchTerm);
         }
         cursor.moveToFirst();
 
         return cursor;
     }
 
-    private Cursor getCursorFromUnionQuery(String baseQuery, String searchTerm){
-        String[] searchQueries = this.getSearchQueries(baseQuery, searchTerm);
-        Cursor cursor = accessDatabase.rawQuery(String.format(
-                "%s UNION ALL %s UNION ALL %s;",
-                searchQueries[0], searchQueries[1], searchQueries[2]
-        ),null);
-
-        return cursor;
-    }
-
-    public String[] getSearchQueries(String baseQuery, String searchTerm){
+    private Cursor queryTablesBySearchTerm(String baseQuery, String searchTerm){
 
         final String titleColumn = NOTES_TABLE_TITLE +"."+ TITLE;
 
@@ -162,8 +152,12 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 baseQuery, titleColumn, "%_"+searchTerm
         );
 
-        return new String[]{querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd};
+        Cursor cursor = accessDatabase.rawQuery(String.format(
+                "%s UNION ALL %s UNION ALL %s;",
+                querySearchTermAtStart, querySearchTermInMiddle, querySearchTermAtEnd
+        ),null);
 
+        return cursor;
     }
 
     public Note getNoteById(int id){
