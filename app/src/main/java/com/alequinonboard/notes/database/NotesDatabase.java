@@ -2,6 +2,7 @@ package com.alequinonboard.notes.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -164,8 +165,9 @@ public class NotesDatabase extends SQLiteOpenHelper {
     }
 
     public void insertToNotesTable(Note newNote){
+        newNote = this.getNoteWithSQLSafeTitleAndBody(newNote);
         accessDatabase.execSQL(String.format(
-                "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
+                "INSERT INTO %s (%s, %s, %s) VALUES (%s, %s, '%s');",
                 NOTES_TABLE_TITLE,
                 TITLE, MAIN_TEXT, TIME_STAMP,
                 newNote.getTitle(), newNote.getBody(), newNote.getTimeStamp()
@@ -255,5 +257,11 @@ public class NotesDatabase extends SQLiteOpenHelper {
         boolean isFavourite = cursor.getCount() == 1;
         cursor.close();
         return isFavourite;
+    }
+
+    private Note getNoteWithSQLSafeTitleAndBody(Note note){
+        note.setTitle(DatabaseUtils.sqlEscapeString(note.getTitle()));
+        note.setBody(DatabaseUtils.sqlEscapeString(note.getBody()));
+        return note;
     }
 }

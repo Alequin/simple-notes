@@ -8,12 +8,16 @@ import static org.junit.Assert.*;
 
 public class NoteClassTests {
 
-    private Note getNoteWithBlankTitle(){
+
+    @Test
+    public void testDateFormatChecker(){
+
         Note note = new Note();
 
         note.setTitle("");
         note.setBody("I am text");
-        note.setTimeStamp(new Date());
-        return note;
+        note.setTimeStamp("12:30 10/06/17");
+
+
     }
 }
