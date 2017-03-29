@@ -113,7 +113,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 NOTES_TABLE_TITLE+"."+ID, FAVOURITES_TABLE_TITLE+"."+NOTES_ID);
 
         if(searchTerm == null || searchTerm.isEmpty()){
-            cursor = accessDatabase.rawQuery(baseQuery+" ORDER BY "+ID+" DESC;",null);
+            cursor = accessDatabase.rawQuery(baseQuery+" ORDER BY "+NOTES_TABLE_TITLE+"."+ID+" DESC;",null);
         }else{
             cursor = this.queryTablesBySearchTerm(baseQuery, searchTerm);
         }
