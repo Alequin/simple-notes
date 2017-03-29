@@ -185,7 +185,7 @@ public class NewNoteActivity extends NoteActivity {
         newNote.setFavourite(favouriteMenuIcon.isStateTrue());
 
         if(newNote.isTitleEmpty()){
-            newNote.generateAndSetNewTitle(database.getTotalNumberOfNotesCreated()+1);
+            newNote.generateAndSetNewTitle();
         }
 
         return newNote;

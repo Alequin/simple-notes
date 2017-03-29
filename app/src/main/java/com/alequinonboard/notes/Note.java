@@ -16,7 +16,7 @@ public class Note {
     private String date;
     private boolean isFavourite;
 
-    public static final DateFormat creationDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public static final DateFormat creationDateFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
 
     public String getTitle() {
         if(title == null){
@@ -36,8 +36,8 @@ public class Note {
         return title.isEmpty();
     }
 
-    public void generateAndSetNewTitle(int noteNumber){
-        title = String.format("Note %02d: %s", noteNumber, this.date);
+    public void generateAndSetNewTitle(){
+        title = "Note: "+ this.date;
     }
 
     public String getBody() {
@@ -90,7 +90,7 @@ public class Note {
     }
 
     private void checkDateFormatValidity(String date){
-        Pattern datePattern = Pattern.compile("^\\d\\d/\\d\\d/\\d+$");
+        Pattern datePattern = Pattern.compile("^\\d\\d\\:\\d\\d\\s\\d\\d/\\d\\d/\\d+$");
         if(!(datePattern.matcher(date)).find()){
             throw new IllegalArgumentException("Date format should match dd/mm/yyyy");
         }
@@ -98,16 +98,16 @@ public class Note {
 
     private void checkDateValueValidity(String date){
         final String errorMessage = "Given %s is not valid: " + date;
-        final int day = Integer.parseInt(date.substring(0,2));
+        final int day = Integer.parseInt(date.substring(6,8));
         if(day < 1 || day > 31){
             throw new IllegalArgumentException(String.format(errorMessage, "day"));
         }
-        final int month = Integer.parseInt(date.substring(3,5));
+        final int month = Integer.parseInt(date.substring(9,11));
         if(month < 1 || month > 12){
             throw new IllegalArgumentException(String.format(errorMessage, "month"));
         }
-        final int year = Integer.parseInt(date.substring(6));
-        if(year < 2017){
+        final int year = Integer.parseInt(date.substring(12));
+        if(year < 17){
             throw new IllegalArgumentException(String.format(errorMessage, "year"));
         }
     }

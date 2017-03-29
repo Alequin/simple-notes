@@ -31,9 +31,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
     private static final String FAVOURITES_TABLE_TITLE = "favourites";
     private static final String NOTES_ID = "notes_id";
 
-    private static final String NOTE_COUNTER_TABLE_TITLE = "note_counter";
-    private static final String NUMBER_OF_NOTES = "note_counter";
-
     private NotesDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -56,16 +53,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "FOREIGN KEY (%s) " +
                 "REFERENCES %s (%s));",
                 FAVOURITES_TABLE_TITLE, ID, NOTES_ID, NOTES_ID, NOTES_ID, NOTES_TABLE_TITLE, ID
-        ));
-
-        database.execSQL(String.format(
-                "CREATE TABLE %s (" +
-                "%s INTEGER);",
-                NOTE_COUNTER_TABLE_TITLE, NUMBER_OF_NOTES
-        ));
-
-        database.execSQL(String.format(
-                "INSERT INTO %s VALUES (%s)", NOTE_COUNTER_TABLE_TITLE, 0
         ));
     }
 
@@ -183,7 +170,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 TITLE, MAIN_TEXT, DATE,
                 newNote.getTitle(), newNote.getBody(), newNote.getDate()
         ));
-        this.incrementTotalNotesCreated();
     }
 
     public void insertIdToFavouritesTable(int noteId){
@@ -237,14 +223,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
     }
 
-    private void incrementTotalNotesCreated(){
-        accessDatabase.execSQL(String.format(
-                "UPDATE %s SET %s = %s + 1",
-                NOTE_COUNTER_TABLE_TITLE, NUMBER_OF_NOTES, NUMBER_OF_NOTES
-        ));
-
-    }
-
     public int getNumberOfCurrentNotes(){
 
         final String columnName = String.format("COUNT(%s)", TITLE);
@@ -254,18 +232,6 @@ public class NotesDatabase extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         int noteCount = cursor.getInt(cursor.getColumnIndex(columnName));
-        cursor.close();
-        return noteCount;
-    }
-
-    public int getTotalNumberOfNotesCreated(){
-
-        Cursor cursor = accessDatabase.rawQuery(String.format(
-                "SELECT %s FROM %s", NUMBER_OF_NOTES, NOTE_COUNTER_TABLE_TITLE
-        ),null);
-        cursor.moveToFirst();
-
-        int noteCount = cursor.getInt(cursor.getColumnIndex(NUMBER_OF_NOTES));
         cursor.close();
         return noteCount;
     }
