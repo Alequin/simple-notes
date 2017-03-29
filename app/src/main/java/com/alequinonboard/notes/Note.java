@@ -20,8 +20,7 @@ public class Note {
     public static final DateFormat timeStampFormat;
 
     static{
-        timeStampFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
-        timeStampFormat.setTimeZone(TimeZone.getDefault());
+        timeStampFormat = new SimpleDateFormat("HH:mm dd/MM/yy");
     }
 
     public String getTitle() {
