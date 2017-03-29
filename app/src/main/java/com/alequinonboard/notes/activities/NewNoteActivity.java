@@ -53,6 +53,7 @@ public class NewNoteActivity extends NoteActivity {
         getMenuInflater().inflate(R.menu.menu_new_notes, menu);
 
         favouriteMenuIcon.setMenuItem(menu.getItem(0));
+        favouriteMenuIcon.applyCurrentState();
 
         return true;
     }

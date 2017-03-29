@@ -32,6 +32,10 @@ public class BooleanMenuItem {
         this.item = item;
     }
 
+    public void applyCurrentState(){
+        this.setState(state);
+    }
+
     public void setState(boolean newState){
         this.state = newState;
         if(item != null){

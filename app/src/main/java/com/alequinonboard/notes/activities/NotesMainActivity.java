@@ -55,6 +55,8 @@ public class NotesMainActivity extends NoteActivity {
         getMenuInflater().inflate(R.menu.menu_notes_main, menu);
 
         filterByFavouritesButton.setMenuItem(menu.getItem(2));
+        filterByFavouritesButton.applyCurrentState();
+        
         return true;
     }
 
