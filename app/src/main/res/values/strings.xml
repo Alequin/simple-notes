@@ -12,11 +12,11 @@
     <string name="filter_favourites_icon_title">Filter By Favourites</string>
     <string name="show_all_icon_title">Show All</string>
 
-    <string name="title_activity_new_note">NewNoteActivity</string>
+    <string name="title_activity_new_note">New Note</string>
 
     <string name="title">Title</string>
     <string name="enter_note">Enter note here</string>
-    <string name="title_activity_note_viewer">NoteViewerActivity</string>
+    <string name="title_activity_note_viewer">Note Viewer</string>
 
     <string name="date_created_dialog_title">Date Created</string>
     <string name="date_change_dialog_message">Change the creation date to today?</string>
