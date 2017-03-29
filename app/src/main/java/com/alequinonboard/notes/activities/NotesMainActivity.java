@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +51,7 @@ public class NotesMainActivity extends NoteActivity {
         this.setUpFilterByFavouritesButton();
 
         EditText searchBox = (EditText)findViewById(R.id.search_bar_main_activity);
-        searchBox.setOnKeyListener(getSearchBarKeyListener());
+        searchBox.addTextChangedListener(getSearchBarTextChangeListener());
     }
 
     @Override
@@ -100,11 +102,12 @@ public class NotesMainActivity extends NoteActivity {
         if(this.isSearchBarVisible()){
             this.hideSearchBar();
             SoftInputVisibilityController.hideAndResetSoftInput(this);
+            this.updateListView();
         }else{
             this.showSearchBarAndRequestFocus();
             SoftInputVisibilityController.showSoftInput(this);
+            this.updateListViewWithSearchTerm(this.getSearchBarText());
         }
-        this.updateListViewWithSearchTerm(this.getSearchBarText());
     }
 
     private void onPressFilterFavouritesButton(){
@@ -134,12 +137,21 @@ public class NotesMainActivity extends NoteActivity {
         );
     }
 
-    private View.OnKeyListener getSearchBarKeyListener(){
-        return new View.OnKeyListener() {
+    private TextWatcher getSearchBarTextChangeListener(){
+        return new TextWatcher() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                updateListViewWithSearchTerm(getSearchBarText());
-                return false;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateListViewWithSearchTerm(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         };
     }

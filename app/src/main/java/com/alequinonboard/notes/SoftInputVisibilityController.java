@@ -53,10 +53,9 @@ public class SoftInputVisibilityController {
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-        //TODO decide if this commented out code is required
         //line resets the InputMethodManager so that when showSoftInput is called it starts from its
         //Original state
         //show soft input will not work (after hideAndResetSoftInput has been called) if this line is not included
-        //imm.restartInput(view);
+        imm.restartInput(view);
     }
 }

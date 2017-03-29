@@ -16,11 +16,4 @@ public class NoteClassTests {
         note.setTimeStamp(new Date());
         return note;
     }
-
-    @Test
-    public void testNoteTitleGeneration(){
-        Note note = getNoteWithBlankTitle();
-        note.generateAndSetNewTitle(5);
-        assertEquals("Note 05: 26/03/2017", note.getTitle());
-    }
 }
