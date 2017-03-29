@@ -8,27 +8,18 @@
     android:paddingStart="@dimen/basic_padding"
     android:paddingRight="@dimen/basic_padding"
     android:paddingEnd="@dimen/basic_padding"
+    android:background="@color/main_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.alequinonboard.notes.activities.NoteViewerActivity"
     tools:showIn="@layout/activity_note_viewer"
     android:orientation="vertical">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_height="@dimen/header_section_height"
+        style="@style/header_margin"
+        android:background="#fff"
         >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#fff"/>
 
         <ImageView
             android:id="@id/favourite_icon_viewer_activity"
@@ -62,40 +53,22 @@
 
     </RelativeLayout>
 
-    <Space
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.2"/>
+        android:layout_weight="1"
+        style="@style/section_margin"
+        android:background="#fff">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        >
-
-        <ImageView
+        <TextView
+            android:id="@id/main_text_viewer_activity"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#fff"/>
+            android:layout_height="0dp"
+            android:background="#fff"
+            android:padding="@dimen/basic_padding"
+            style="@style/main_text_style"
+            />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@id/main_text_viewer_activity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/basic_padding"
-                style="@style/main_text_style"
-                />
-        </ScrollView>
-
-    </RelativeLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"/>
+    </ScrollView>
 
 </LinearLayout>

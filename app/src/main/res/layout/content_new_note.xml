@@ -8,27 +8,18 @@
     android:paddingStart="@dimen/basic_padding"
     android:paddingRight="@dimen/basic_padding"
     android:paddingEnd="@dimen/basic_padding"
+    android:background="@color/main_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.alequinonboard.notes.activities.NewNoteActivity"
     tools:showIn="@layout/activity_new_note"
     android:orientation="vertical">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_height="@dimen/header_section_height"
+        style="@style/header_margin"
+        android:background="#fff"
         >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#ffffff"/>
 
         <EditText
             android:id="@id/title_new_notes_activity"
@@ -41,38 +32,24 @@
 
     </RelativeLayout>
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_weight="1"
+        style="@style/section_margin"
+        android:background="#ffffff"
         >
 
-        <ImageView
+        <EditText
+            android:id="@id/main_text_new_notes_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="#ffffff"/>
-
-            <EditText
-                android:id="@id/main_text_new_notes_activity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/basic_padding"
-                android:hint="@string/enter_note"
-                android:background="@android:color/transparent"
-                style="@style/main_text_style"
-                />
+            android:padding="@dimen/basic_padding"
+            android:hint="@string/enter_note"
+            android:background="@android:color/transparent"
+            style="@style/main_text_style"
+            />
 
     </RelativeLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"/>
 
 </LinearLayout>

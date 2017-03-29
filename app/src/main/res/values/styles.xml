@@ -28,4 +28,13 @@
         <item name="android:textSize">@dimen/normal_text_size</item>
     </style>
 
+    <style name="header_margin">
+        <item name="android:layout_marginTop">@dimen/basic_padding</item>
+    </style>
+
+    <style name="section_margin">
+        <item name="android:layout_marginTop">@dimen/basic_padding</item>
+        <item name="android:layout_marginBottom">@dimen/basic_padding</item>
+    </style>
+
 </resources>
