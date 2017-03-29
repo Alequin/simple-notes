@@ -3,6 +3,7 @@ package com.alequinonboard.notes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 /**
@@ -16,7 +17,12 @@ public class Note {
     private String timeStamp;
     private boolean isFavourite;
 
-    public static final DateFormat timeStampFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
+    public static final DateFormat timeStampFormat;
+
+    static{
+        timeStampFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
+        timeStampFormat.setTimeZone(TimeZone.getDefault());
+    }
 
     public String getTitle() {
         if(title == null){

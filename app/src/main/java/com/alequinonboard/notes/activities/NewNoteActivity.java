@@ -25,6 +25,7 @@ public class NewNoteActivity extends NoteActivity {
     private boolean editMode;
     private String noteToEditCreationDate;
 
+    private AlertDialog warnUserOfTitleOverride;
     private AlertDialog warnUserOfBlankBodyDialog;
     private AlertDialog editModeDateChangeDialog;
 
@@ -45,6 +46,7 @@ public class NewNoteActivity extends NoteActivity {
 
         this.setUpFavouriteMenuIcon();
         this.applyTagIconListener();
+        warnUserOfTitleOverride = this.buildOverrideTitleWarningDialog();
         warnUserOfBlankBodyDialog = this.buildBlankBodyDialog();
     }
 
@@ -116,7 +118,15 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private void onPressTagIcon(){
-        this.setTitleViewString(Note.getGeneratedTitleFromTimeStamp(new Date()));
+        if(this.isTitleEmpty()){
+            this.setGeneratedTitle();
+        }else{
+            warnUserOfTitleOverride.show();
+        }
+    }
+
+    private void setGeneratedTitle(){
+        setTitleViewString(Note.getGeneratedTitleFromTimeStamp(new Date()));
     }
 
     private void setUpFavouriteMenuIcon(){
@@ -129,6 +139,20 @@ public class NewNoteActivity extends NoteActivity {
         }else{
             favouriteMenuIcon.setState(false);
         }
+    }
+
+    private AlertDialog buildOverrideTitleWarningDialog(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.title_override_warning));
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                setGeneratedTitle();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), null);
+        return builder.create();
     }
 
     private AlertDialog buildBlankBodyDialog(){
@@ -174,16 +198,20 @@ public class NewNoteActivity extends NoteActivity {
         return ((EditText) findViewById(R.id.main_text_new_notes_activity)).getText().toString();
     }
 
+    private boolean isTitleEmpty(){
+        return this.getTitleStringFromView().isEmpty();
+    }
+
+    private boolean isBodyEmpty(){
+        return getBodyStringFromView().isEmpty();
+    }
+
     private void setTitleViewString(String textToShow){
         ((EditText) findViewById(R.id.title_new_notes_activity)).setText(textToShow);
     }
 
     private void setBodyViewString(String textToShow){
         ((EditText) findViewById(R.id.main_text_new_notes_activity)).setText(textToShow);
-    }
-
-    private boolean isBodyEmpty(){
-        return getBodyStringFromView().isEmpty();
     }
 
     private Note initialiseNewNote(Date creationDate){

@@ -23,6 +23,9 @@
     <string name="blank_main_text_dialog_message">
         Add some text to the body of your note before saving
     </string>
+    <string name="title_override_warning">
+        Remove current title and replace it with a generated one?
+    </string>
 
 
     <string name="yes">Yes</string>
