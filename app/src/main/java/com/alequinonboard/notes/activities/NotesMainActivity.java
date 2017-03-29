@@ -56,7 +56,7 @@ public class NotesMainActivity extends NoteActivity {
 
         filterByFavouritesButton.setMenuItem(menu.getItem(2));
         filterByFavouritesButton.applyCurrentState();
-        
+
         return true;
     }
 

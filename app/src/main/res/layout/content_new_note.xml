@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/basic_padding"
-    android:paddingStart="@dimen/basic_padding"
-    android:paddingRight="@dimen/basic_padding"
-    android:paddingEnd="@dimen/basic_padding"
+    android:paddingLeft="@dimen/basic_margin"
+    android:paddingStart="@dimen/basic_margin"
+    android:paddingRight="@dimen/basic_margin"
+    android:paddingEnd="@dimen/basic_margin"
     android:background="@color/main_background"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.alequinonboard.notes.activities.NewNoteActivity"
@@ -25,10 +25,26 @@
             android:id="@id/title_new_notes_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
             android:hint="@string/title"
+            android:gravity="left|center_vertical"
             android:background="@android:color/transparent"
+            android:layout_toEndOf="@id/generate_title_tag_icon_new_note_activity"
+            android:layout_toRightOf="@id/generate_title_tag_icon_new_note_activity"
             style="@style/title_text_style"
             android:maxLength="25"/>
+
+        <ImageView
+            android:id="@id/generate_title_tag_icon_new_note_activity"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:minWidth="50dp"
+            android:padding="@dimen/basic_margin"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/tag_icon"
+            />
 
     </RelativeLayout>
 
@@ -44,7 +60,7 @@
             android:id="@id/main_text_new_notes_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/basic_padding"
+            android:padding="@dimen/basic_margin"
             android:hint="@string/enter_note"
             android:background="@android:color/transparent"
             style="@style/main_text_style"

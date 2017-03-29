@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.alequinonboard.notes.BooleanMenuItem;
@@ -43,7 +44,7 @@ public class NewNoteActivity extends NoteActivity {
         }
 
         this.setUpFavouriteMenuIcon();
-
+        this.applyTagIconListener();
         warnUserOfBlankBodyDialog = this.buildBlankBodyDialog();
     }
 
@@ -105,6 +106,19 @@ public class NewNoteActivity extends NoteActivity {
         favouriteMenuIcon.setState(!favouriteMenuIcon.isStateTrue());
     }
 
+    private void applyTagIconListener(){
+        findViewById(R.id.generate_title_tag_icon_new_note_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPressTagIcon();
+            }
+        });
+    }
+
+    private void onPressTagIcon(){
+        this.setTitleViewString(Note.getGeneratedTitleFromTimeStamp(new Date()));
+    }
+
     private void setUpFavouriteMenuIcon(){
         favouriteMenuIcon.setIconToUseWhenTrue(ContextCompat.getDrawable(this, R.drawable.fav_green_icon));
         favouriteMenuIcon.setIconToUseWhenFalse(ContextCompat.getDrawable(this, R.drawable.fav_icon));
@@ -148,7 +162,7 @@ public class NewNoteActivity extends NoteActivity {
         final Note noteToEdit = database.getNoteById(getIdOfNoteToEdit());
         this.setTitleViewString(noteToEdit.getTitle());
         this.setBodyViewString(noteToEdit.getBody());
-        noteToEditCreationDate = noteToEdit.getDate();
+        noteToEditCreationDate = noteToEdit.getTimeStamp();
 
     }
 
@@ -173,7 +187,7 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private Note initialiseNewNote(Date creationDate){
-       return initialiseNewNote(Note.creationDateFormat.format(creationDate).toString());
+       return initialiseNewNote(Note.timeStampFormat.format(creationDate).toString());
     }
 
     private Note initialiseNewNote(String creationDate){
@@ -182,7 +196,7 @@ public class NewNoteActivity extends NoteActivity {
 
         newNote.setTitle(getTitleStringFromView());
         newNote.setBody(getBodyStringFromView());
-        newNote.setDate(creationDate);
+        newNote.setTimeStamp(creationDate);
         newNote.setFavourite(favouriteMenuIcon.isStateTrue());
 
         if(newNote.isTitleEmpty()){

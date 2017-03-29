@@ -99,7 +99,7 @@ public class NoteViewerActivity extends NoteActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle(getString(R.string.date_created_dialog_title));
-        builder.setMessage(noteToShow.getDate());
+        builder.setMessage(noteToShow.getTimeStamp());
 
         return builder.create();
     }

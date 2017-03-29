@@ -26,7 +26,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
     public static final String NOTES_TABLE_TITLE = "notes";
     public static final String TITLE = "notes_title";
     public static final String MAIN_TEXT = "main_text";
-    public static final String DATE = "date";
+    public static final String TIME_STAMP = "time_stamp";
 
     private static final String FAVOURITES_TABLE_TITLE = "favourites";
     private static final String NOTES_ID = "notes_id";
@@ -42,7 +42,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "CREATE TABLE %s(" +
                 "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "%s TEXT, %s TEXT, %s TEXT);",
-                NOTES_TABLE_TITLE, ID, TITLE, MAIN_TEXT, DATE
+                NOTES_TABLE_TITLE, ID, TITLE, MAIN_TEXT, TIME_STAMP
         ));
 
         database.execSQL(String.format(
@@ -151,7 +151,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
 
         Cursor cursor = accessDatabase.rawQuery(String.format(
                 "SELECT %s, %s, %s FROM %s WHERE %s = %s",
-                TITLE, MAIN_TEXT, DATE, NOTES_TABLE_TITLE, ID, id
+                TITLE, MAIN_TEXT, TIME_STAMP, NOTES_TABLE_TITLE, ID, id
         ),null);
 
         cursor.moveToFirst();
@@ -167,8 +167,8 @@ public class NotesDatabase extends SQLiteOpenHelper {
         accessDatabase.execSQL(String.format(
                 "INSERT INTO %s (%s, %s, %s) VALUES ('%s', '%s', '%s');",
                 NOTES_TABLE_TITLE,
-                TITLE, MAIN_TEXT, DATE,
-                newNote.getTitle(), newNote.getBody(), newNote.getDate()
+                TITLE, MAIN_TEXT, TIME_STAMP,
+                newNote.getTitle(), newNote.getBody(), newNote.getTimeStamp()
         ));
     }
 
@@ -203,7 +203,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "UPDATE %s SET %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
                 NOTES_TABLE_TITLE, TITLE, editedNote.getTitle(),
                 MAIN_TEXT, editedNote.getBody(),
-                DATE, editedNote.getDate(),
+                TIME_STAMP, editedNote.getTimeStamp(),
                 ID, id
         ));
     }
@@ -240,7 +240,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         Note note = new Note();
         note.setTitle(cursor.getString(cursor.getColumnIndex(TITLE)));
         note.setBody(cursor.getString(cursor.getColumnIndex(MAIN_TEXT)));
-        note.setDate(cursor.getString(cursor.getColumnIndex(DATE)));
+        note.setTimeStamp(cursor.getString(cursor.getColumnIndex(TIME_STAMP)));
         return note;
     }
 

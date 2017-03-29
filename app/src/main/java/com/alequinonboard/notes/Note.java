@@ -13,10 +13,10 @@ public class Note {
 
     private String title;
     private String body;
-    private String date;
+    private String timeStamp;
     private boolean isFavourite;
 
-    public static final DateFormat creationDateFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
+    public static final DateFormat timeStampFormat = new SimpleDateFormat("HH:MM dd/MM/yy");
 
     public String getTitle() {
         if(title == null){
@@ -36,8 +36,12 @@ public class Note {
         return title.isEmpty();
     }
 
+    public static String getGeneratedTitleFromTimeStamp(Date timeStamp){
+        return "Note: "+ timeStampFormat.format(timeStamp).toString();
+    }
+
     public void generateAndSetNewTitle(){
-        title = "Note: "+ this.date;
+        title = "Note: "+ this.timeStamp;
     }
 
     public String getBody() {
@@ -54,23 +58,50 @@ public class Note {
         this.body = body;
     }
 
-    public String getDate() {
-        if(date == null){
-            throw new NullPointerException("date should not be null when get is called");
+    public String getTimeStamp() {
+        if(timeStamp == null){
+            throw new NullPointerException("timeStamp should not be null when get is called");
         }
-        return date;
+        return timeStamp;
     }
 
-    public void setDate(Date date) {
-        if(date == null){
-            throw new NullPointerException("date should not be null");
+    public void setTimeStamp(Date timeStamp) {
+        if(timeStamp == null){
+            throw new NullPointerException("timeStamp should not be null");
         }
-        this.date = creationDateFormat.format(date).toString();
+        this.timeStamp = timeStampFormat.format(timeStamp).toString();
     }
 
-    public void setDate(String date) {
-        checkDateFormatAndValueValidity(date);
-        this.date = date;
+    public void setTimeStamp(String timeStamp) {
+        this.checkTimeStampValueValidity(timeStamp);
+        this.checkTimeStampFormatValidity(timeStamp);
+        this.timeStamp = timeStamp;
+    }
+
+    private void checkTimeStampValueValidity(String timeStamp){
+        if(timeStamp == null){
+            throw new NullPointerException("timeStamp should not be null");
+        }
+        final String errorMessage = "Given %s is not valid: " + timeStamp;
+        final int day = Integer.parseInt(timeStamp.substring(6,8));
+        if(day < 1 || day > 31){
+            throw new IllegalArgumentException(String.format(errorMessage, "day"));
+        }
+        final int month = Integer.parseInt(timeStamp.substring(9,11));
+        if(month < 1 || month > 12){
+            throw new IllegalArgumentException(String.format(errorMessage, "month"));
+        }
+        final int year = Integer.parseInt(timeStamp.substring(12));
+        if(year < 17){
+            throw new IllegalArgumentException(String.format(errorMessage, "year"));
+        }
+    }
+
+    private void checkTimeStampFormatValidity(String timeStamp){
+        Pattern datePattern = Pattern.compile("^\\d\\d\\:\\d\\d\\s\\d\\d/\\d\\d/\\d+$");
+        if(!(datePattern.matcher(timeStamp)).find()){
+            throw new IllegalArgumentException("Date format should match dd/mm/yyyy");
+        }
     }
 
     public boolean isFavourite() {
@@ -81,34 +112,5 @@ public class Note {
         isFavourite = favourite;
     }
 
-    private void checkDateFormatAndValueValidity(String date){
-        if(date == null){
-            throw new NullPointerException("date should not be null");
-        }
-        this.checkDateFormatValidity(date);
-        this.checkDateValueValidity(date);
-    }
 
-    private void checkDateFormatValidity(String date){
-        Pattern datePattern = Pattern.compile("^\\d\\d\\:\\d\\d\\s\\d\\d/\\d\\d/\\d+$");
-        if(!(datePattern.matcher(date)).find()){
-            throw new IllegalArgumentException("Date format should match dd/mm/yyyy");
-        }
-    }
-
-    private void checkDateValueValidity(String date){
-        final String errorMessage = "Given %s is not valid: " + date;
-        final int day = Integer.parseInt(date.substring(6,8));
-        if(day < 1 || day > 31){
-            throw new IllegalArgumentException(String.format(errorMessage, "day"));
-        }
-        final int month = Integer.parseInt(date.substring(9,11));
-        if(month < 1 || month > 12){
-            throw new IllegalArgumentException(String.format(errorMessage, "month"));
-        }
-        final int year = Integer.parseInt(date.substring(12));
-        if(year < 17){
-            throw new IllegalArgumentException(String.format(errorMessage, "year"));
-        }
-    }
 }

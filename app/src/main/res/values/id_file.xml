@@ -96,4 +96,9 @@
         type="id"
         />
 
+    <item
+        name="generate_title_tag_icon_new_note_activity"
+        type="id"
+        />
+
 </resources>
