@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.alequinonboard.notes.BooleanMenuItem;
+import com.alequinonboard.notes.DoubleTapCheck;
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.SoftInputVisibilityController;
@@ -30,6 +31,8 @@ public class NewNoteActivity extends NoteActivity {
     private AlertDialog editModeDateChangeDialog;
 
     private final BooleanMenuItem favouriteMenuIcon = new BooleanMenuItem();
+
+    private final DoubleTapCheck doubleTapCheck = new DoubleTapCheck();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,10 @@ public class NewNoteActivity extends NoteActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(doubleTapCheck.isSecondTap()){
+            return true;
+        }
 
         switch(id){
 
@@ -118,6 +125,9 @@ public class NewNoteActivity extends NoteActivity {
     }
 
     private void onPressTagIcon(){
+        if(doubleTapCheck.isSecondTap()){
+            return;
+        }
         if(this.isTitleEmpty()){
             this.setGeneratedTitle();
         }else{

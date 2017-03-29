@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.alequinonboard.notes.BooleanMenuItem;
+import com.alequinonboard.notes.DoubleTapCheck;
 import com.alequinonboard.notes.R;
 import com.alequinonboard.notes.SoftInputVisibilityController;
 import com.alequinonboard.notes.database.NotesDatabase;
@@ -30,6 +31,8 @@ public class NotesMainActivity extends NoteActivity {
     private Cursor listCursor;
 
     private final BooleanMenuItem filterByFavouritesButton = new BooleanMenuItem();
+
+    private final DoubleTapCheck doubleTapCheck = new DoubleTapCheck();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,10 @@ public class NotesMainActivity extends NoteActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(doubleTapCheck.isSecondTap()){
+            return true;
+        }
 
         switch(id){
 

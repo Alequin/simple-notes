@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alequinonboard.notes.DoubleTapCheck;
 import com.alequinonboard.notes.Note;
 import com.alequinonboard.notes.R;
 
@@ -20,6 +21,8 @@ public class NoteViewerActivity extends NoteActivity {
     private Note noteToShow;
 
     private AlertDialog dateCreatedDialog;
+
+    private final DoubleTapCheck doubleTapCheck = new DoubleTapCheck();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,10 @@ public class NoteViewerActivity extends NoteActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(doubleTapCheck.isSecondTap()){
+            return true;
+        }
 
         switch(id){
 
