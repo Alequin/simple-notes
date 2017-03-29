@@ -194,7 +194,7 @@ public class NotesMainActivity extends NoteActivity {
         if(!filterByFavouritesButton.isStateTrue()){
             cursor = database.getNotesTableQueryByTitle(searchTerm);
         }else{
-            cursor = database.getNotesJoinedFavouritesTableQueryByTitle(searchTerm);
+            cursor = database.getFavouriteNotesTableQueryByTitle(searchTerm);
         }
 
         return cursor;

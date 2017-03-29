@@ -105,7 +105,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 "SELECT %s, %s FROM %s", ID, TITLE, NOTES_TABLE_TITLE);
 
         if(searchTerm == null || searchTerm.isEmpty()){
-            cursor = accessDatabase.rawQuery(baseQuery+";",null);
+            cursor = accessDatabase.rawQuery(baseQuery+" ORDER BY "+ID+" DESC;",null);
         }else{
             cursor = this.queryTablesBySearchTerm(baseQuery, searchTerm);
         }
@@ -114,7 +114,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getNotesJoinedFavouritesTableQueryByTitle(String searchTerm){
+    public Cursor getFavouriteNotesTableQueryByTitle(String searchTerm){
 
         Cursor cursor;
         final String baseQuery = String.format(
@@ -126,7 +126,7 @@ public class NotesDatabase extends SQLiteOpenHelper {
                 NOTES_TABLE_TITLE+"."+ID, FAVOURITES_TABLE_TITLE+"."+NOTES_ID);
 
         if(searchTerm == null || searchTerm.isEmpty()){
-            cursor = accessDatabase.rawQuery(baseQuery+";",null);
+            cursor = accessDatabase.rawQuery(baseQuery+" ORDER BY "+ID+" DESC;",null);
         }else{
             cursor = this.queryTablesBySearchTerm(baseQuery, searchTerm);
         }
